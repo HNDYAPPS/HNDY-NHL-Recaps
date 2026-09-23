@@ -108,6 +108,7 @@
     letter-spacing: 0.5px;
     margin-top: 3px;
   }
+  #mobileLine { display: none; }
   #new-badge {
     background: #2a5;
     color: #000;
@@ -212,10 +213,22 @@
     /* Brand badge is pure decoration; drop it on small screens so the
        game info and controls each get a full row to breathe. */
     #brand { display: none; }
-    #info { flex: 1 1 100%; }
-    #line1 { font-size: 19px; }
-    #line2 { font-size: 12px; }
-    #new-badge { font-size: 10px; padding: 1px 6px; }
+    #info { flex: 1 1 100%; justify-content: center; }
+    /* Desktop's two-line layout (big counter, small date line below)
+       gives way to one centered line, same idea as the controls row. */
+    #infoText { display: none; }
+    #mobileLine {
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: #eee;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     /* Dividers are a nice-to-have on a roomy desktop bar, not worth
        the width on a phone. */
     .divider { display: none; }
@@ -263,6 +276,7 @@
           <span id="totalGames"></span>
         </div>
       </div>
+      <div id="mobileLine"></div>
     </div>
     <div id="controls">
       <select id="jump" title="Jump to game"></select>
@@ -405,6 +419,13 @@
       : '';
     $('long').classList.toggle('active', useLong);
     $('jump').value = idx;
+
+    var mobileParts = [];
+    if (meta.date) mobileParts.push(formatDate(meta.date));
+    mobileParts.push('Game ' + (idx + 1) + '/' + games.length);
+    if (g) mobileParts.push(g.away + ' @ ' + g.home);
+    if (meta.totalGames) mobileParts.push(meta.totalGames + ' games today');
+    $('mobileLine').textContent = mobileParts.join(' · ');
   }
 
   function fixPlayerSize() {
