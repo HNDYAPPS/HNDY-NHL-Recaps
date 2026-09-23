@@ -192,7 +192,9 @@
   #toast.show { opacity: 1; }
   .hidden { display: none !important; }
 
-  @media (max-width: 640px) {
+  @media (max-width: 640px), (max-height: 640px) {
+    /* Matches on width OR height so a phone stays in compact mode in
+       BOTH orientations (landscape width alone can exceed 640px). */
     /* Bar floats over the bottom of the video instead of taking its
        own row, so hiding it (auto-hide, below) gives the video the
        full screen instead of leaving an empty gap behind. */
@@ -322,8 +324,12 @@
   var hideTimer = null;
 
   function isMobile() {
+    // Use the SHORTER of width/height: a phone's short side stays
+    // small in both portrait and landscape, but raw width alone grows
+    // past any reasonable phone threshold once rotated to landscape.
     try {
-      return window.matchMedia('(pointer: coarse)').matches && window.innerWidth < 900;
+      var shortSide = Math.min(window.innerWidth, window.innerHeight);
+      return window.matchMedia('(pointer: coarse)').matches && shortSide < 640;
     } catch (e) { return false; }
   }
 
@@ -508,6 +514,9 @@
     window.addEventListener('resize', fixPlayerSize);
     window.addEventListener('orientationchange', function () {
       setTimeout(fixPlayerSize, 300);
+      // isMobile() can flip true/false on rotation; re-evaluate whether
+      // the bar should be hiding itself under the new orientation.
+      showBar();
     });
 
     $('bar').addEventListener('pointerdown', showBar);
