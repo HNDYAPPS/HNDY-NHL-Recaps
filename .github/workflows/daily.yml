@@ -2,9 +2,11 @@ name: Daily recap queue
 
 on:
   schedule:
-    # 07:00 UTC = 10:00 Finnish time (EET, winter). Finland is UTC+3 in
-    # summer (EEST), so this runs at 09:00 local during DST months.
-    - cron: "0 7 * * *"
+    # Every 30 min, 05:00-11:00 UTC. Covers roughly 07:00-13:00 Finnish
+    # time (both DST and winter), so recap videos that appear late
+    # (West coast games especially) get picked up on a later run and
+    # show up if you check the page again after your first watch.
+    - cron: "0,30 5-11 * * *"
   workflow_dispatch: {}
 
 permissions:

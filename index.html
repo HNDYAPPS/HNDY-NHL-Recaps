@@ -4,13 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NHL Recaps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   html, body {
     margin: 0;
     height: 100%;
     background: #000;
     color: #eee;
-    font-family: system-ui, sans-serif;
+    font-family: 'Oswald', system-ui, sans-serif;
     overflow: hidden;
   }
   #stage {
@@ -43,31 +46,106 @@
   #bar {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 20px;
+    gap: 18px;
+    padding: 14px 20px;
     background: #111;
     border-top: 1px solid #222;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  #bar.not-started {
+    pointer-events: none;
+    opacity: 0.35;
+  }
+  #bar.auto-hidden {
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
   }
   #info {
     flex: 1;
-    font-size: 28px;
-    font-weight: 600;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  #infoText {
+    min-width: 0;
+  }
+  #brand {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    color: #fff;
+    background: #1f3a5f;
+    padding: 6px 12px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  #line1 {
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   #teams {
-    font-size: 22px;
-    color: #aaa;
+    color: #ddd;
     margin-left: 16px;
   }
-  button {
-    font-size: 26px;
-    min-width: 72px;
-    padding: 14px 20px;
-    background: #222;
+  #line2 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #888;
+    letter-spacing: 0.5px;
+    margin-top: 3px;
+  }
+  #new-badge {
+    background: #2a5;
+    color: #000;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 8px;
+  }
+  .group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .divider {
+    width: 2px;
+    align-self: stretch;
+    background: #2a2a2a;
+  }
+  select, button {
+    height: 58px;
+    box-sizing: border-box;
+    font-family: 'Oswald', system-ui, sans-serif;
+    font-weight: 600;
+    background: #1c1c1c;
     color: #eee;
-    border: 2px solid #444;
+    border: 2px solid #3a3a3a;
     border-radius: 10px;
     cursor: pointer;
+  }
+  select {
+    font-size: 18px;
+    padding: 0 12px;
+    max-width: 220px;
+  }
+  button {
+    font-size: 24px;
+    min-width: 66px;
+    padding: 0 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   button:hover, button:focus { background: #333; border-color: #888; outline: none; }
   button.active { background: #2a5; border-color: #2a5; color: #000; }
@@ -77,10 +155,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 24px;
     background: rgba(0,0,0,0.85);
     z-index: 10;
   }
-  #overlay button { font-size: 40px; padding: 30px 60px; }
+  #overlay button {
+    font-size: 26px;
+    height: auto;
+    padding: 26px 40px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
   #toast {
     position: absolute;
     top: 20px;
@@ -97,6 +182,18 @@
   }
   #toast.show { opacity: 1; }
   .hidden { display: none !important; }
+
+  @media (max-width: 640px) {
+    #bar { gap: 8px; padding: 8px 10px; }
+    #brand { font-size: 13px; padding: 4px 8px; border-radius: 6px; }
+    #line1 { font-size: 18px; }
+    #line2 { font-size: 11px; }
+    #new-badge { font-size: 10px; padding: 1px 6px; }
+    select, button { height: 42px; }
+    select { font-size: 13px; padding: 0 8px; max-width: 110px; }
+    button { font-size: 14px; min-width: 40px; padding: 0 8px; }
+    .group { gap: 6px; }
+  }
 </style>
 </head>
 <body>
@@ -112,21 +209,38 @@
     </video-js>
     <div id="toast"></div>
     <div id="overlay">
-      <button id="start">▶ Start</button>
+      <button id="startShort">▶ Short highlights</button>
+      <button id="startLong">▶ Long highlights</button>
     </div>
   </div>
-  <div id="bar">
+  <div id="bar" class="not-started">
     <div id="info">
-      <span id="counter">Game –/–</span>
-      <span id="teams" class="hidden"></span>
+      <div id="brand">HNDYAPPS<br>NHL RECAPS</div>
+      <div id="infoText">
+        <div id="line1">
+          <span id="counter">Game –/–</span>
+          <span id="teams"></span>
+          <span id="new-badge" class="hidden"></span>
+        </div>
+        <div id="line2">
+          <span id="date"></span>
+          <span id="totalGames"></span>
+        </div>
+      </div>
     </div>
-    <button id="prev" title="Previous (←)">⏮</button>
-    <button id="back" title="-10 s (↓)">-10s</button>
-    <button id="pause" title="Pause (space)">⏸</button>
-    <button id="next" title="Next (→)">⏭</button>
-    <button id="long" title="Short / long recap (L)">Long</button>
-    <button id="names" title="Show team names (T)">Teams</button>
-    <button id="fs" title="Fullscreen (F)">⛶</button>
+    <select id="jump" title="Jump to game"></select>
+    <div class="divider"></div>
+    <div class="group">
+      <button id="prev" title="Previous (←)">⏮</button>
+      <button id="back" title="-10 s (↓)">-10s</button>
+      <button id="pause" title="Pause (space)">⏸</button>
+      <button id="next" title="Next (→)">⏭</button>
+    </div>
+    <div class="divider"></div>
+    <div class="group">
+      <button id="long" title="Short / long recap (L)">Long</button>
+      <button id="fs" title="Fullscreen (F)">⛶</button>
+    </div>
   </div>
 </div>
 
@@ -134,13 +248,16 @@
 <script>
 (function () {
   var STORE = 'nhlRecapQueue';
+  var SEEN_STORE = 'nhlRecapSeen'; // per-device: how many games we'd seen last visit
   var END_MARGIN = 1.0; // seconds before end to switch
+  var WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  var queue = [];
+  var games = [];
+  var meta = { date: '', totalGames: 0 };
   var idx = 0;
   var useLong = false;
-  var showTeams = false;
   var switching = false;
+  var started = false;
   var player = null;
 
   var $ = function (id) { return document.getElementById(id); };
@@ -149,10 +266,9 @@
     try {
       var s = JSON.parse(localStorage.getItem(STORE) || '{}');
       useLong = !!s.useLong;
-      showTeams = !!s.showTeams;
       // Only restore position if same queue (first gameId matches)
-      if (s.firstGameId && queue.length && s.firstGameId === queue[0].gameId) {
-        idx = Math.min(s.idx || 0, queue.length - 1);
+      if (s.firstGameId && games.length && s.firstGameId === games[0].gameId) {
+        idx = Math.min(s.idx || 0, games.length - 1);
       }
     } catch (e) {}
   }
@@ -160,11 +276,52 @@
   function saveState() {
     try {
       localStorage.setItem(STORE, JSON.stringify({
-        firstGameId: queue.length ? queue[0].gameId : null,
+        firstGameId: games.length ? games[0].gameId : null,
         idx: idx,
-        useLong: useLong,
-        showTeams: showTeams
+        useLong: useLong
       }));
+    } catch (e) {}
+  }
+
+  // Auto-hide the control bar on mobile only (small screen + touch),
+  // not on desktop or TV/Chromecast (those keep the bar always visible).
+  var HIDE_DELAY = 2000;
+  var hideTimer = null;
+
+  function isMobile() {
+    try {
+      return window.matchMedia('(pointer: coarse)').matches && window.innerWidth < 900;
+    } catch (e) { return false; }
+  }
+
+  function scheduleHide() {
+    if (!isMobile()) return;
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function () {
+      if (started && player && !player.paused()) {
+        $('bar').classList.add('auto-hidden');
+      }
+    }, HIDE_DELAY);
+  }
+
+  function showBar() {
+    $('bar').classList.remove('auto-hidden');
+    scheduleHide();
+  }
+
+  function checkNewGames() {
+    // Per-device only: compares against what THIS browser last saw for
+    // this date. Doesn't know what you watched on another device.
+    try {
+      var seen = JSON.parse(localStorage.getItem(SEEN_STORE) || '{}');
+      var prevCount = (seen.date === meta.date) ? (seen.gameCount || 0) : 0;
+      var diff = games.length - prevCount;
+      if (diff > 0 && prevCount > 0) {
+        var badge = $('new-badge');
+        badge.textContent = '+' + diff + ' new';
+        badge.classList.remove('hidden');
+      }
+      localStorage.setItem(SEEN_STORE, JSON.stringify({ date: meta.date, gameCount: games.length }));
     } catch (e) {}
   }
 
@@ -176,17 +333,39 @@
     t._timer = setTimeout(function () { t.classList.remove('show'); }, 1500);
   }
 
+  function formatDate(dateStr) {
+    // dateStr is "YYYY-MM-DD". Build as local date, not UTC, so the
+    // weekday/day-of-month can't shift by a day in negative offsets.
+    var parts = dateStr.split('-').map(Number);
+    var d = new Date(parts[0], parts[1] - 1, parts[2]);
+    return WEEKDAYS[d.getDay()] + ' ' + d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
+  }
+
+  function fillJumpMenu() {
+    var sel = $('jump');
+    sel.innerHTML = '';
+    games.forEach(function (g, i) {
+      var opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = (i + 1) + '. ' + g.away + ' @ ' + g.home;
+      sel.appendChild(opt);
+    });
+  }
+
   function render() {
-    $('counter').textContent = 'Game ' + (idx + 1) + '/' + queue.length;
-    var g = queue[idx];
+    $('counter').textContent = 'Game ' + (idx + 1) + '/' + games.length;
+    var g = games[idx];
     $('teams').textContent = g ? g.away + ' @ ' + g.home : '';
-    $('teams').classList.toggle('hidden', !showTeams);
+    $('date').textContent = meta.date ? formatDate(meta.date) : '';
+    $('totalGames').textContent = meta.totalGames
+      ? '· ' + meta.totalGames + ' games today'
+      : '';
     $('long').classList.toggle('active', useLong);
-    $('names').classList.toggle('active', showTeams);
+    $('jump').value = idx;
   }
 
   function currentVideoId() {
-    var g = queue[idx];
+    var g = games[idx];
     if (!g) return null;
     if (useLong && g.longVideoId) return g.longVideoId;
     return g.shortVideoId;
@@ -214,7 +393,13 @@
   function go(delta) {
     var n = idx + delta;
     if (n < 0) { toast('First game'); return; }
-    if (n >= queue.length) { toast('All done'); player.pause(); return; }
+    if (n >= games.length) { toast('All done'); player.pause(); return; }
+    idx = n;
+    loadCurrent();
+  }
+
+  function jumpTo(n) {
+    if (n < 0 || n >= games.length) return;
     idx = n;
     loadCurrent();
   }
@@ -230,63 +415,76 @@
     loadCurrent();
   }
 
-  function toggleTeams() {
-    showTeams = !showTeams;
-    render();
-    saveState();
-  }
-
   function fullscreen() {
     var el = document.documentElement;
     if (document.fullscreenElement) document.exitFullscreen();
     else if (el.requestFullscreen) el.requestFullscreen();
   }
 
+  function beginPlayback(long) {
+    if (started) return;
+    started = true;
+    useLong = long;
+    $('overlay').classList.add('hidden');
+    $('bar').classList.remove('not-started');
+    loadCurrent();
+  }
+
   function wire() {
+    $('startShort').onclick = function () { beginPlayback(false); };
+    $('startLong').onclick = function () { beginPlayback(true); };
+
     $('prev').onclick = function () { go(-1); };
     $('next').onclick = function () { go(1); };
     $('back').onclick = function () { player.currentTime(Math.max(0, player.currentTime() - 10)); };
     $('pause').onclick = togglePause;
     $('long').onclick = toggleLong;
-    $('names').onclick = toggleTeams;
     $('fs').onclick = fullscreen;
+    $('jump').onchange = function () { jumpTo(Number($('jump').value)); };
+    $('bar').addEventListener('pointerdown', showBar);
+    $('videowrap').addEventListener('click', function () {
+      if (isMobile() && started) showBar();
+    });
 
     document.addEventListener('keydown', function (e) {
-      if (e.target.tagName === 'BUTTON') e.target.blur();
+      if (!started) return;
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT') e.target.blur();
       switch (e.key) {
         case ' ': e.preventDefault(); togglePause(); break;
         case 'ArrowRight': e.preventDefault(); go(1); break;
         case 'ArrowLeft': e.preventDefault(); go(-1); break;
         case 'ArrowDown': e.preventDefault(); $('back').onclick(); break;
         case 'l': case 'L': toggleLong(); break;
-        case 't': case 'T': toggleTeams(); break;
         case 'f': case 'F': fullscreen(); break;
       }
     });
 
     player.on('timeupdate', function () {
-      if (switching) return;
+      if (switching || !started) return;
       var d = player.duration();
       if (d && d - player.currentTime() < END_MARGIN) go(1);
     });
-    player.on('ended', function () { if (!switching) go(1); });
-    player.on('play', function () { $('pause').textContent = '⏸'; });
-    player.on('pause', function () { $('pause').textContent = '▶'; });
+    player.on('ended', function () { if (!switching && started) go(1); });
+    player.on('play', function () { $('pause').textContent = '⏸'; scheduleHide(); });
+    player.on('pause', function () {
+      $('pause').textContent = '▶';
+      clearTimeout(hideTimer);
+      $('bar').classList.remove('auto-hidden');
+    });
   }
 
   fetch('queue.json?t=' + Date.now())
     .then(function (r) { return r.json(); })
     .then(function (q) {
-      queue = q;
+      games = q.games || [];
+      meta = { date: q.date || '', totalGames: q.totalGames || 0 };
       loadState();
+      checkNewGames();
+      fillJumpMenu();
       render();
       videojs.getPlayer('player').ready(function () {
         player = this;
         wire();
-        $('start').onclick = function () {
-          $('overlay').classList.add('hidden');
-          loadCurrent();
-        };
       });
     })
     .catch(function (e) {

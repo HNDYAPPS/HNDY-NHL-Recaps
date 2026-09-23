@@ -179,18 +179,22 @@ def analyse(game: dict, landing: dict, players: dict, cfg: dict) -> dict:
     }
 
 
-def write_queue(ranked: list[dict]) -> None:
-    queue = [
-        {
-            "rank": i + 1,
-            "gameId": g["gameId"],
-            "home": g["home"],
-            "away": g["away"],
-            "shortVideoId": g["shortVideoId"],
-            "longVideoId": g["longVideoId"],
-        }
-        for i, g in enumerate(ranked)
-    ]
+def write_queue(date: str, total_games: int, ranked: list[dict]) -> None:
+    queue = {
+        "date": date,
+        "totalGames": total_games,
+        "games": [
+            {
+                "rank": i + 1,
+                "gameId": g["gameId"],
+                "home": g["home"],
+                "away": g["away"],
+                "shortVideoId": g["shortVideoId"],
+                "longVideoId": g["longVideoId"],
+            }
+            for i, g in enumerate(ranked)
+        ],
+    }
     (ROOT / "queue.json").write_text(
         json.dumps(queue, indent=2), encoding="utf-8"
     )
@@ -221,7 +225,9 @@ def main() -> None:
     cfg = load_config()
     players = load_players()
 
-    games = extract_games(fetch_score(date))
+    score = fetch_score(date, force=True)
+    total_games = len(score.get("games", []))
+    games = extract_games(score)
     games = [g for g in games if g["shortVideoId"]]  # no recap = nothing to watch
 
     for g in games:
@@ -230,10 +236,10 @@ def main() -> None:
     save_players(players)
 
     ranked = sorted(games, key=lambda g: g["debug"]["score"], reverse=True)
-    write_queue(ranked)
+    write_queue(date, total_games, ranked)
     write_debug(date, ranked)
 
-    print(f"Date: {date}   games queued: {len(ranked)}")
+    print(f"Date: {date}   games queued: {len(ranked)} of {total_games} total")
     print("queue.json written (no spoilers)")
     print(f"debug/scores-{date}.txt written (SPOILERS)")
 

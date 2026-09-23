@@ -25,11 +25,17 @@ def yesterday_na() -> str:
     return (datetime.now(eastern) - timedelta(days=1)).strftime("%Y-%m-%d")
 
 
-def fetch_score(date: str) -> dict:
-    """Return score JSON for date. Uses cache/ if present."""
+def fetch_score(date: str, force: bool = False) -> dict:
+    """Return score JSON for date.
+
+    Uses cache/ if present, unless force=True (always hits the API live,
+    but still overwrites the cache file so it's useful for debugging).
+    Live fetch matters because recap video links appear on games during
+    the day as videos get published, and a stale cache would hide them.
+    """
     CACHE_DIR.mkdir(exist_ok=True)
     cache_file = CACHE_DIR / f"score-{date}.json"
-    if cache_file.exists():
+    if not force and cache_file.exists():
         return json.loads(cache_file.read_text(encoding="utf-8"))
     resp = requests.get(
         API.format(date=date),
