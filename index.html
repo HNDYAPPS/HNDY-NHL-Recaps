@@ -114,6 +114,11 @@
     border-radius: 6px;
     margin-left: 8px;
   }
+  #controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
   .group {
     display: flex;
     align-items: center;
@@ -184,14 +189,35 @@
   .hidden { display: none !important; }
 
   @media (max-width: 640px) {
-    #bar { gap: 8px; padding: 8px 10px; }
-    #brand { font-size: 13px; padding: 4px 8px; border-radius: 6px; }
-    #line1 { font-size: 18px; }
-    #line2 { font-size: 11px; }
+    /* Bar floats over the bottom of the video instead of taking its
+       own row, so hiding it (auto-hide, below) gives the video the
+       full screen instead of leaving an empty gap behind. */
+    #bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      flex-wrap: wrap;
+      row-gap: 10px;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(17, 17, 17, 0.92);
+    }
+    #info { flex: 1 1 100%; }
+    #brand { font-size: 14px; padding: 4px 8px; border-radius: 6px; }
+    #line1 { font-size: 19px; }
+    #line2 { font-size: 12px; }
     #new-badge { font-size: 10px; padding: 1px 6px; }
-    select, button { height: 42px; }
-    select { font-size: 13px; padding: 0 8px; max-width: 110px; }
-    button { font-size: 14px; min-width: 40px; padding: 0 8px; }
+    #controls {
+      flex: 1 1 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+      row-gap: 8px;
+      gap: 8px;
+    }
+    select, button { height: 44px; }
+    select { font-size: 14px; padding: 0 8px; max-width: 130px; }
+    button { font-size: 15px; min-width: 44px; padding: 0 10px; }
     .group { gap: 6px; }
   }
 </style>
@@ -228,18 +254,21 @@
         </div>
       </div>
     </div>
-    <select id="jump" title="Jump to game"></select>
-    <div class="divider"></div>
-    <div class="group">
-      <button id="prev" title="Previous (←)">⏮</button>
-      <button id="back" title="-10 s (↓)">-10s</button>
-      <button id="pause" title="Pause (space)">⏸</button>
-      <button id="next" title="Next (→)">⏭</button>
-    </div>
-    <div class="divider"></div>
-    <div class="group">
-      <button id="long" title="Short / long recap (L)">Long</button>
-      <button id="fs" title="Fullscreen (F)">⛶</button>
+    <div id="controls">
+      <select id="jump" title="Jump to game"></select>
+      <div class="divider"></div>
+      <div class="group">
+        <button id="prev" title="Previous (←)">⏮</button>
+        <button id="back" title="-5 s (↓)">-5s</button>
+        <button id="fwd" title="+5 s (↑)">+5s</button>
+        <button id="pause" title="Pause (space)">⏸</button>
+        <button id="next" title="Next (→)">⏭</button>
+      </div>
+      <div class="divider"></div>
+      <div class="group">
+        <button id="long" title="Short / long recap (L)">Long</button>
+        <button id="fs" title="Fullscreen (F)">⛶</button>
+      </div>
     </div>
   </div>
 </div>
@@ -436,13 +465,16 @@
 
     $('prev').onclick = function () { go(-1); };
     $('next').onclick = function () { go(1); };
-    $('back').onclick = function () { player.currentTime(Math.max(0, player.currentTime() - 10)); };
+    $('back').onclick = function () { player.currentTime(Math.max(0, player.currentTime() - 5)); };
+    $('fwd').onclick = function () { player.currentTime(Math.min(player.duration() || Infinity, player.currentTime() + 5)); };
     $('pause').onclick = togglePause;
     $('long').onclick = toggleLong;
     $('fs').onclick = fullscreen;
     $('jump').onchange = function () { jumpTo(Number($('jump').value)); };
     $('bar').addEventListener('pointerdown', showBar);
-    $('videowrap').addEventListener('click', function () {
+    // pointerdown (not click) so it can't be swallowed by video.js's own
+    // touch/tap handling on the video element before a click ever fires.
+    $('videowrap').addEventListener('pointerdown', function () {
       if (isMobile() && started) showBar();
     });
 
@@ -454,6 +486,7 @@
         case 'ArrowRight': e.preventDefault(); go(1); break;
         case 'ArrowLeft': e.preventDefault(); go(-1); break;
         case 'ArrowDown': e.preventDefault(); $('back').onclick(); break;
+        case 'ArrowUp': e.preventDefault(); $('fwd').onclick(); break;
         case 'l': case 'L': toggleLong(); break;
         case 'f': case 'F': fullscreen(); break;
       }
