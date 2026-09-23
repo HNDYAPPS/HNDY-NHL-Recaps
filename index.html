@@ -393,6 +393,20 @@
     $('jump').value = idx;
   }
 
+  function fixPlayerSize() {
+    // Brightcove/video.js sometimes resets the video element's own size
+    // (leaving black gaps, or a tiny video in a corner) after a window
+    // resize, an orientation change, or loading a new video. Re-force
+    // it to fill its container every time any of those happen.
+    if (!player || !player.tech_ || !player.tech_.el_) return;
+    var el = player.tech_.el_;
+    el.style.position = 'absolute';
+    el.style.top = '0';
+    el.style.left = '0';
+    el.style.width = '100%';
+    el.style.height = '100%';
+  }
+
   function currentVideoId() {
     var g = games[idx];
     if (!g) return null;
@@ -415,6 +429,7 @@
       }
       player.catalog.load(video);
       player.play();
+      setTimeout(fixPlayerSize, 200);
       setTimeout(function () { switching = false; }, 1500);
     });
   }
@@ -471,6 +486,11 @@
     $('long').onclick = toggleLong;
     $('fs').onclick = fullscreen;
     $('jump').onchange = function () { jumpTo(Number($('jump').value)); };
+    window.addEventListener('resize', fixPlayerSize);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(fixPlayerSize, 300);
+    });
+
     $('bar').addEventListener('pointerdown', showBar);
     // pointerdown (not click) so it can't be swallowed by video.js's own
     // touch/tap handling on the video element before a click ever fires.
@@ -498,6 +518,7 @@
       if (d && d - player.currentTime() < END_MARGIN) go(1);
     });
     player.on('ended', function () { if (!switching && started) go(1); });
+    player.on('loadedmetadata', fixPlayerSize);
     player.on('play', function () { $('pause').textContent = '⏸'; scheduleHide(); });
     player.on('pause', function () {
       $('pause').textContent = '▶';
