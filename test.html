@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Brightcove embed test</title>
+<style>
+  html, body {
+    margin: 0;
+    background: #111;
+    color: #eee;
+    font-family: sans-serif;
+  }
+  #wrap {
+    max-width: 960px;
+    margin: 20px auto;
+  }
+  video-js {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  /* Hide spoilers: progress bar and times */
+  .vjs-progress-control,
+  .vjs-duration,
+  .vjs-remaining-time,
+  .vjs-current-time,
+  .vjs-time-divider {
+    display: none !important;
+  }
+  #status {
+    margin-top: 12px;
+    font-size: 18px;
+  }
+  #log {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #9a9;
+    white-space: pre-wrap;
+  }
+  button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background: #333;
+    color: #eee;
+    border: 1px solid #555;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <video-js
+    id="player"
+    data-account="6415718365001"
+    data-player="EXtG1xJ7H"
+    data-embed="default"
+    data-video-id="6405337939112"
+    controls
+    autoplay
+    muted>
+  </video-js>
+
+  <div id="status">Video 1/2</div>
+  <div>
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+  </div>
+  <div id="log"></div>
+</div>
+
+<script src="https://players.brightcove.net/6415718365001/EXtG1xJ7H_default/index.min.js"></script>
+<script>
+  var videoIds = ['6405337939112', '6405344930112'];
+  var current = 0;
+
+  function log(msg) {
+    var el = document.getElementById('log');
+    el.textContent += msg + '\n';
+    console.log(msg);
+  }
+
+  function setStatus() {
+    document.getElementById('status').textContent =
+      'Video ' + (current + 1) + '/' + videoIds.length;
+  }
+
+  videojs.getPlayer('player').ready(function () {
+    var player = this;
+    log('Player ready.');
+
+    function loadIndex(i) {
+      if (i < 0 || i >= videoIds.length) {
+        log('End of list.');
+        return;
+      }
+      current = i;
+      setStatus();
+      log('Loading video ' + videoIds[i]);
+      player.catalog.getVideo(videoIds[i], function (error, video) {
+        if (error) {
+          log('catalog.getVideo ERROR: ' + JSON.stringify(error));
+          return;
+        }
+        player.catalog.load(video);
+        player.play();
+      });
+    }
+
+    player.on('loadedmetadata', function () {
+      log('loadedmetadata: ' + player.mediainfo.name);
+    });
+
+    player.on('error', function () {
+      var e = player.error();
+      log('PLAYER ERROR: ' + (e ? e.code + ' ' + e.message : 'unknown'));
+    });
+
+    player.on('ended', function () {
+      log('ended -> next');
+      loadIndex(current + 1);
+    });
+
+    document.getElementById('next').onclick = function () {
+      loadIndex(current + 1);
+    };
+    document.getElementById('prev').onclick = function () {
+      loadIndex(current - 1);
+    };
+  });
+</script>
+</body>
+</html>

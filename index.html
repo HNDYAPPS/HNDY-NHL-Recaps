@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NHL Recaps</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #000;
+    color: #eee;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+  }
+  #stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  #videowrap {
+    flex: 1;
+    position: relative;
+    background: #000;
+  }
+  video-js {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /* No native control bar at all: no progress, no duration, no spoilers */
+  .vjs-control-bar,
+  .vjs-big-play-button,
+  .vjs-progress-control,
+  .vjs-duration,
+  .vjs-remaining-time,
+  .vjs-current-time,
+  .vjs-time-divider {
+    display: none !important;
+  }
+  #bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    background: #111;
+    border-top: 1px solid #222;
+  }
+  #info {
+    flex: 1;
+    font-size: 28px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  #teams {
+    font-size: 22px;
+    color: #aaa;
+    margin-left: 16px;
+  }
+  button {
+    font-size: 26px;
+    min-width: 72px;
+    padding: 14px 20px;
+    background: #222;
+    color: #eee;
+    border: 2px solid #444;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  button:hover, button:focus { background: #333; border-color: #888; outline: none; }
+  button.active { background: #2a5; border-color: #2a5; color: #000; }
+  #overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.85);
+    z-index: 10;
+  }
+  #overlay button { font-size: 40px; padding: 30px 60px; }
+  #toast {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 24px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 5;
+  }
+  #toast.show { opacity: 1; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="videowrap">
+    <video-js
+      id="player"
+      class="vjs-fill"
+      data-account="6415718365001"
+      data-player="EXtG1xJ7H"
+      data-embed="default"
+      playsinline>
+    </video-js>
+    <div id="toast"></div>
+    <div id="overlay">
+      <button id="start">▶ Start</button>
+    </div>
+  </div>
+  <div id="bar">
+    <div id="info">
+      <span id="counter">Game –/–</span>
+      <span id="teams" class="hidden"></span>
+    </div>
+    <button id="prev" title="Previous (←)">⏮</button>
+    <button id="back" title="-10 s (↓)">-10s</button>
+    <button id="pause" title="Pause (space)">⏸</button>
+    <button id="next" title="Next (→)">⏭</button>
+    <button id="long" title="Short / long recap (L)">Long</button>
+    <button id="names" title="Show team names (T)">Teams</button>
+    <button id="fs" title="Fullscreen (F)">⛶</button>
+  </div>
+</div>
+
+<script src="https://players.brightcove.net/6415718365001/EXtG1xJ7H_default/index.min.js"></script>
+<script>
+(function () {
+  var STORE = 'nhlRecapQueue';
+  var END_MARGIN = 1.0; // seconds before end to switch
+
+  var queue = [];
+  var idx = 0;
+  var useLong = false;
+  var showTeams = false;
+  var switching = false;
+  var player = null;
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function loadState() {
+    try {
+      var s = JSON.parse(localStorage.getItem(STORE) || '{}');
+      useLong = !!s.useLong;
+      showTeams = !!s.showTeams;
+      // Only restore position if same queue (first gameId matches)
+      if (s.firstGameId && queue.length && s.firstGameId === queue[0].gameId) {
+        idx = Math.min(s.idx || 0, queue.length - 1);
+      }
+    } catch (e) {}
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORE, JSON.stringify({
+        firstGameId: queue.length ? queue[0].gameId : null,
+        idx: idx,
+        useLong: useLong,
+        showTeams: showTeams
+      }));
+    } catch (e) {}
+  }
+
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function () { t.classList.remove('show'); }, 1500);
+  }
+
+  function render() {
+    $('counter').textContent = 'Game ' + (idx + 1) + '/' + queue.length;
+    var g = queue[idx];
+    $('teams').textContent = g ? g.away + ' @ ' + g.home : '';
+    $('teams').classList.toggle('hidden', !showTeams);
+    $('long').classList.toggle('active', useLong);
+    $('names').classList.toggle('active', showTeams);
+  }
+
+  function currentVideoId() {
+    var g = queue[idx];
+    if (!g) return null;
+    if (useLong && g.longVideoId) return g.longVideoId;
+    return g.shortVideoId;
+  }
+
+  function loadCurrent() {
+    var vid = currentVideoId();
+    render();
+    saveState();
+    if (!vid) { toast('No video'); return; }
+    switching = true;
+    player.catalog.getVideo(vid, function (error, video) {
+      if (error) {
+        toast('Video load failed, skipping');
+        switching = false;
+        go(1);
+        return;
+      }
+      player.catalog.load(video);
+      player.play();
+      setTimeout(function () { switching = false; }, 1500);
+    });
+  }
+
+  function go(delta) {
+    var n = idx + delta;
+    if (n < 0) { toast('First game'); return; }
+    if (n >= queue.length) { toast('All done'); player.pause(); return; }
+    idx = n;
+    loadCurrent();
+  }
+
+  function togglePause() {
+    if (player.paused()) { player.play(); $('pause').textContent = '⏸'; }
+    else { player.pause(); $('pause').textContent = '▶'; }
+  }
+
+  function toggleLong() {
+    useLong = !useLong;
+    toast(useLong ? 'Long recap' : 'Short recap');
+    loadCurrent();
+  }
+
+  function toggleTeams() {
+    showTeams = !showTeams;
+    render();
+    saveState();
+  }
+
+  function fullscreen() {
+    var el = document.documentElement;
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (el.requestFullscreen) el.requestFullscreen();
+  }
+
+  function wire() {
+    $('prev').onclick = function () { go(-1); };
+    $('next').onclick = function () { go(1); };
+    $('back').onclick = function () { player.currentTime(Math.max(0, player.currentTime() - 10)); };
+    $('pause').onclick = togglePause;
+    $('long').onclick = toggleLong;
+    $('names').onclick = toggleTeams;
+    $('fs').onclick = fullscreen;
+
+    document.addEventListener('keydown', function (e) {
+      if (e.target.tagName === 'BUTTON') e.target.blur();
+      switch (e.key) {
+        case ' ': e.preventDefault(); togglePause(); break;
+        case 'ArrowRight': e.preventDefault(); go(1); break;
+        case 'ArrowLeft': e.preventDefault(); go(-1); break;
+        case 'ArrowDown': e.preventDefault(); $('back').onclick(); break;
+        case 'l': case 'L': toggleLong(); break;
+        case 't': case 'T': toggleTeams(); break;
+        case 'f': case 'F': fullscreen(); break;
+      }
+    });
+
+    player.on('timeupdate', function () {
+      if (switching) return;
+      var d = player.duration();
+      if (d && d - player.currentTime() < END_MARGIN) go(1);
+    });
+    player.on('ended', function () { if (!switching) go(1); });
+    player.on('play', function () { $('pause').textContent = '⏸'; });
+    player.on('pause', function () { $('pause').textContent = '▶'; });
+  }
+
+  fetch('queue.json?t=' + Date.now())
+    .then(function (r) { return r.json(); })
+    .then(function (q) {
+      queue = q;
+      loadState();
+      render();
+      videojs.getPlayer('player').ready(function () {
+        player = this;
+        wire();
+        $('start').onclick = function () {
+          $('overlay').classList.add('hidden');
+          loadCurrent();
+        };
+      });
+    })
+    .catch(function (e) {
+      $('counter').textContent = 'queue.json load failed';
+      console.error(e);
+    });
+})();
+</script>
+</body>
+</html>

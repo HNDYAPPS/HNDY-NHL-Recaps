@@ -1,0 +1,17 @@
+{
+  "favouriteTeams": ["OTT"],
+  "weights": {
+    "goal": 1.0,
+    "margin1": 3.0,
+    "margin2": 1.0,
+    "overtime": 3.0,
+    "shootout": -2.0,
+    "leadChange": 2.0,
+    "thirdPeriodComeback": 4.0,
+    "hatTrick": 4.0,
+    "fight": 0.0,
+    "penaltyMinute": 0.1,
+    "favouriteTeam": 5.0,
+    "finnishPoint": 2.0
+  }
+}

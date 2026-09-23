@@ -1,0 +1,34 @@
+name: Daily recap queue
+
+on:
+  schedule:
+    # 07:00 UTC = 10:00 Finnish time (EET, winter). Finland is UTC+3 in
+    # summer (EEST), so this runs at 09:00 local during DST months.
+    - cron: "0 7 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-queue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install -r requirements.txt
+
+      - run: python fetch.py
+      - run: python score.py
+
+      - name: Commit queue.json if changed
+        run: |
+          git config user.name "nhl-kooste-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add queue.json
+          git diff --cached --quiet || git commit -m "Update queue.json"
+          git push
