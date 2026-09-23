@@ -206,26 +206,29 @@
       flex-wrap: wrap;
       row-gap: 10px;
       gap: 8px;
-      padding: 14px 10px 10px;
-      background: #111;
-      box-shadow: 0 -24px 24px -12px #111;
+      padding: 10px;
+      background: rgba(17, 17, 17, 0.92);
     }
+    /* Brand badge is pure decoration; drop it on small screens so the
+       game info and controls each get a full row to breathe. */
+    #brand { display: none; }
     #info { flex: 1 1 100%; }
-    #brand { font-size: 14px; padding: 4px 8px; border-radius: 6px; }
     #line1 { font-size: 19px; }
     #line2 { font-size: 12px; }
     #new-badge { font-size: 10px; padding: 1px 6px; }
+    /* Dividers are a nice-to-have on a roomy desktop bar, not worth
+       the width on a phone. */
+    .divider { display: none; }
     #controls {
       flex: 1 1 100%;
       justify-content: center;
-      flex-wrap: wrap;
-      row-gap: 8px;
-      gap: 8px;
+      flex-wrap: nowrap;
+      gap: 4px;
     }
-    select, button { height: 44px; }
-    select { font-size: 14px; padding: 0 8px; max-width: 130px; }
-    button { font-size: 15px; min-width: 44px; padding: 0 10px; }
-    .group { gap: 6px; }
+    select, button { height: 40px; }
+    select { font-size: 12px; padding: 0 4px; max-width: 92px; }
+    button { font-size: 13px; min-width: 34px; padding: 0 6px; }
+    .group { gap: 4px; }
   }
 </style>
 </head>
@@ -501,12 +504,6 @@
   }
 
   function wire() {
-    // Brightcove appears to re-assert its own sizing on some internal
-    // timer of its own during playback, not just at load, so a one-shot
-    // fix isn't enough for long recaps. Keep re-forcing it for as long
-    // as the page is open.
-    setInterval(fixPlayerSize, 2000);
-
     $('startShort').onclick = function () { beginPlayback(false); };
     $('startLong').onclick = function () { beginPlayback(true); };
 
