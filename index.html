@@ -28,10 +28,14 @@
     background: #000;
   }
   video-js {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
   }
   /* No native control bar at all: no progress, no duration, no spoilers */
   .vjs-control-bar,
@@ -394,17 +398,30 @@
   }
 
   function fixPlayerSize() {
-    // Brightcove/video.js sometimes resets the video element's own size
-    // (leaving black gaps, or a tiny video in a corner) after a window
-    // resize, an orientation change, or loading a new video. Re-force
-    // it to fill its container every time any of those happen.
-    if (!player || !player.tech_ || !player.tech_.el_) return;
-    var el = player.tech_.el_;
-    el.style.position = 'absolute';
-    el.style.top = '0';
-    el.style.left = '0';
-    el.style.width = '100%';
-    el.style.height = '100%';
+    // Brightcove's player sets its own inline sizing (a fixed aspect
+    // ratio box, e.g. via padding-top) on both the player root element
+    // and the video tag, which beats a plain CSS rule and causes black
+    // letterbox bars or a tiny video after resize/rotation/loading a
+    // new video. Re-force full size with !important, which is the one
+    // thing that can override an inline style.
+    if (!player) return;
+    var force = function (el) {
+      if (!el) return;
+      el.style.setProperty('position', 'absolute', 'important');
+      el.style.setProperty('top', '0', 'important');
+      el.style.setProperty('left', '0', 'important');
+      el.style.setProperty('right', '0', 'important');
+      el.style.setProperty('bottom', '0', 'important');
+      el.style.setProperty('width', '100%', 'important');
+      el.style.setProperty('height', '100%', 'important');
+      el.style.setProperty('padding', '0', 'important');
+      el.style.setProperty('padding-top', '0', 'important');
+      el.style.setProperty('padding-bottom', '0', 'important');
+      el.style.setProperty('max-width', 'none', 'important');
+      el.style.setProperty('max-height', 'none', 'important');
+    };
+    force(player.el());
+    force(player.tech_ && player.tech_.el_);
   }
 
   function currentVideoId() {
@@ -429,7 +446,9 @@
       }
       player.catalog.load(video);
       player.play();
-      setTimeout(fixPlayerSize, 200);
+      // Brightcove can re-apply its own sizing more than once while a
+      // new video spins up, so re-force ours a few times to win the race.
+      [0, 150, 400, 900, 1500].forEach(function (ms) { setTimeout(fixPlayerSize, ms); });
       setTimeout(function () { switching = false; }, 1500);
     });
   }
@@ -519,7 +538,7 @@
     });
     player.on('ended', function () { if (!switching && started) go(1); });
     player.on('loadedmetadata', fixPlayerSize);
-    player.on('play', function () { $('pause').textContent = '⏸'; scheduleHide(); });
+    player.on('play', function () { $('pause').textContent = '⏸'; scheduleHide(); fixPlayerSize(); });
     player.on('pause', function () {
       $('pause').textContent = '▶';
       clearTimeout(hideTimer);
