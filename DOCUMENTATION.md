@@ -19,27 +19,60 @@ Two parts:
    reads `queue.json`, plays recap videos back-to-back with a
    custom spoiler-free UI (no progress bar, no scores shown).
 
-**Live URL**: https://hndyapps.github.io/HNDY-NHL-Recaps/
+**Main URL** (no preferences): https://hndyapps.github.io/HNDY-NHL-Recaps/
+**Hannu's profile** (weighted): https://hndyapps.github.io/HNDY-NHL-Recaps/Handyy/
 **Repo**: https://github.com/HNDYAPPS/HNDY-NHL-Recaps (public — required
 for free GitHub Pages; nothing sensitive in the repo)
 
 ## Status: all phases (0–4) built and working, confirmed on desktop +
-mobile (Android/Firefox) as of 2026-09-24.
+mobile (Android/Firefox), plus a multi-profile split, as of 2026-09-24.
 
 ## Architecture
 
+### Profiles (added 2026-09-24)
+Two "profiles" today, each its own URL/folder, no login, pre-configured
+by editing files and pushing:
+- **Root `/`** — the default, no personal preferences at all. Games
+  ordered purely by `startTimeUTC` (chronological) — no scoring, no
+  weights applied whatsoever.
+- **`/Handyy/`** — Hannu's weighted profile (OTT favourite, Finnish-
+  player bonus, the tuned weights in `config.json`).
+
+`score.py` has a `PROFILES` dict mapping profile name → (output
+folder, config filename). Game/landing/player data is fetched **once**
+per run and reused across every profile (no extra API load per
+profile). For each profile it computes its own ranking and writes that
+profile's own `queue.json`; `sync_player_html()` copies the single
+canonical root `index.html` into every non-root profile folder
+verbatim on every run — **only ever hand-edit the root `index.html`**,
+the copies are generated, never edited directly.
+
+Adding a new profile (e.g. a friend's): add one line to `PROFILES` in
+`score.py`, add a config file, run `score.py` once locally to generate
+that folder, commit. No other code changes needed. See
+`session-temp.md` for the still-open "Berdu" (friend's) profile.
+
+Why not client-side re-ranking instead (ship one dataset, let the
+browser sort it per person): the ranking score itself is spoiler-
+adjacent (a high score usually means OT/comeback/etc. happened), which
+is exactly why `queue.json` never sends scores to the browser. Profiles
+keep 100% of scoring server-side so that guarantee holds for every
+profile, not just the original one.
+
 ### Data flow
 ```
-GitHub Actions (cron, every 30 min, 05:00-11:00 UTC)
+GitHub Actions (cron, every 30 min, 04:00-11:00 UTC)
   → fetch.py: hits api-web.nhle.com/v1/score/{date} (live, no cache)
   → score.py: for each finished game, fetches gamecenter landing JSON
               (cached per game — stable once game is FINAL) and player
-              nationality (cached forever in cache/players.json)
-  → writes queue.json (rank, teams, video IDs, date, totalGames — NO
-              scores/results, those go in debug/scores-{date}.txt)
-  → commits queue.json if changed
-GitHub Pages serves index.html + queue.json
-  → browser fetches queue.json, plays videos via Brightcove embed
+              nationality (cached forever in cache/players.json) ONCE,
+              shared across all profiles
+  → per profile: writes queue.json (rank, teams, video IDs, date,
+              totalGames — NO scores/results, those go in
+              debug/scores-{profile}-{date}.txt) to that profile's folder
+  → commits changed queue.json files (and any regenerated index.html copies)
+GitHub Pages serves index.html + queue.json per folder
+  → browser fetches that folder's queue.json, plays videos via Brightcove embed
 ```
 
 ### Why live fetch, no cache on the score endpoint
@@ -57,7 +90,7 @@ confirmed working on GitHub Pages. Video ID = the trailing number in
 `threeMinRecap`/`condensedGame` paths from the score API (regex
 `(\d{10,})$`).
 
-### Scoring (config.json)
+### Scoring (config.json — used by the Handyy profile only)
 Weighted sum of: goal count, margin (1-goal and 2-goal bonuses),
 overtime, shootout (negative weight — user dislikes them), lead
 changes, 3rd-period comeback, hat tricks, penalty minutes, favourite
@@ -65,17 +98,25 @@ team bonus (currently `["OTT"]`), Finnish player points (birthCountry
 looked up via player API, cached forever). Fights weight is 0 (user:
 "never shown in highlights"). **No threshold — all games are kept**,
 user wants time to watch everything, just ranked by score. Debug
-breakdown (spoilers) written to `debug/scores-{date}.txt`.
+breakdown (spoilers) written to `debug/scores-{profile}-{date}.txt`.
+The root/default profile applies none of this — see Profiles above.
 
 ## Player UI decisions (the "why" behind index.html)
 
-- **Two start buttons** ("Short highlights" / "Long highlights")
-  instead of one generic Start — avoids a bug where picking Long
-  before dismissing an overlay left playback running behind it.
-  Bottom bar is inert (`.not-started`) until one is clicked.
-- **Brand badge** ("HNDYAPPS / NHL RECAPS") — placeholder logo, user
-  plans to design a real one later. Shown on desktop only; hidden on
-  mobile (decoration, not worth the space there).
+- **Two start buttons** ("Short highlights" / "Long highlights"),
+  stacked in 3 rows with the logo above them on the start overlay.
+  Originally the bottom bar was disabled (`.not-started`, greyed out)
+  until one was clicked — **removed 2026-09-24**: user wanted the
+  dropdown (and every other control) usable immediately, without
+  forcing the overlay choice first. Now `ensureStarted()` is called
+  from `go()`, `jumpTo()`, `togglePause()`, `toggleLong()` etc. — the
+  first control used, whichever it is, implicitly starts playback
+  (default: short highlights, current `idx`).
+- **Brand logo**: `logo_hndyapps_black.png` (dark rounded-square badge,
+  white/orange text — designed for dark backgrounds, matches this UI).
+  Shown in the bar next to the game counter (desktop only, hidden on
+  mobile — no room) and above the two start buttons on the overlay.
+  Replaced an earlier plain-text "HNDYAPPS / NHL RECAPS" badge.
 - **Mobile vs desktop detection**: uses `matchMedia('(pointer: coarse)')`
   AND the **shorter** of width/height < 640px — NOT raw width. Raw
   width breaks on phone landscape (width exceeds any phone threshold
@@ -118,24 +159,27 @@ breakdown (spoilers) written to `debug/scores-{date}.txt`.
 - GitHub Pages is public (free-tier private repos can't publish
   Pages) — repo was made public for this reason, confirmed nothing
   sensitive in it.
-- DST is not handled precisely — cron window (05:00-11:00 UTC) is a
+- DST is not handled precisely — cron window (04:00-11:00 UTC) is a
   fixed compromise covering both Finnish winter and summer time
   reasonably, not exact.
+- Berdu (friend's) profile not built yet — see `session-temp.md`.
 
 ## Files
 
 | File | Purpose |
 |---|---|
 | `fetch.py` | Fetches/caches score JSON, extracts finished games + video IDs |
-| `score.py` | Scores games, writes `queue.json` + `debug/scores-{date}.txt` |
-| `config.json` | Weights + favourite teams |
-| `index.html` | The player (single file, vanilla JS, no build step) |
+| `score.py` | Scores games per profile, writes each profile's `queue.json` + `debug/scores-{profile}-{date}.txt`, copies `index.html` into non-root profile folders |
+| `config.json` | Weights + favourite teams — currently the Handyy profile's config |
+| `index.html` | The **canonical** player (single file, vanilla JS, no build step) — only ever edit this copy, at the repo root |
+| `Handyy/` | Generated: `index.html` (copy, don't edit) + `queue.json` (Hannu's weighted profile) |
+| `logo_hndyapps_black.png` / `logo_hndyapps_white.png` | Brand logo; black (dark-background) version is the one used in the UI |
 | `test.html` | Phase 0 scratch file, Brightcove embed proof-of-concept — not used by the real player, kept for reference |
 | `requirements.txt` | Python deps (`requests`) |
-| `.github/workflows/daily.yml` | The cron job |
+| `.github/workflows/daily.yml` | The cron job (runs `score.py` once, which handles every profile internally) |
 | `cache/` | gitignored — score JSON, per-game landing JSON, player nationality lookups |
-| `debug/` | gitignored — score breakdowns with spoilers |
-| `queue.json` | Committed — what the player actually reads |
+| `debug/` | gitignored — score breakdowns with spoilers, one file per profile |
+| `queue.json` (root) | Committed — the default/no-preference profile's queue, chronological order |
 
 ## Session history
 
@@ -144,7 +188,11 @@ breakdown (spoilers) written to `debug/scores-{date}.txt`.
   live device testing since local testing can't cover mobile. Fixed:
   video-fill-container, mobile-vs-desktop detection using width alone,
   Brightcove's inline-style sizing override, single-line mobile info
-  bar. Current queue.json has real data from 2026-09-22 games.
+  bar, cron start time moved to 04:00 UTC. Then split into profiles:
+  root is now unweighted/chronological/no-preferences, the original
+  weighted experience moved to `/Handyy/`; replaced the text brand
+  badge with the actual logo; removed the disabled-bar-until-start
+  behavior so the dropdown/any control works immediately.
 
 ## Picking this up next session
 
