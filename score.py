@@ -215,12 +215,18 @@ def write_queue(out_dir: Path, date: str, total_games: int, ordered: list[dict])
     )
 
 
+PLAYER_ASSETS = ["index.html", "logo_hndyapps_black.png"]
+
+
 def sync_player_html(out_dir: Path) -> None:
-    """Copy the one canonical index.html into a profile folder verbatim.
-    Only ever edit the root index.html by hand."""
+    """Copy the canonical player page + the assets it references (the
+    logo) into a profile folder verbatim, since index.html points to
+    the logo with a plain relative path. Only ever edit the root
+    copies of these files by hand."""
     if out_dir == ROOT:
         return
-    shutil.copyfile(ROOT / "index.html", out_dir / "index.html")
+    for name in PLAYER_ASSETS:
+        shutil.copyfile(ROOT / name, out_dir / name)
 
 
 def write_debug(profile: str, date: str, ranked: list[dict]) -> None:
