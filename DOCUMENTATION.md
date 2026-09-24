@@ -52,6 +52,11 @@ Adding a new profile (e.g. a friend's): add one line to `PROFILES` in
 that folder, commit. No other code changes needed. See
 `session-temp.md` for the still-open "Berdu" (friend's) profile.
 
+**This is an expected, ongoing pattern, not a one-off**: user intends
+to add more users/customized pages over time (confirmed 2026-09-24).
+Treat "add a profile for person X" as a small, well-trodden task using
+the steps above, not a redesign.
+
 **Important**: the profile-folder copy of `index.html` only refreshes
 when `score.py` actually runs (the cron, or a manual trigger) — it does
 NOT happen just because root `index.html` was edited and pushed. This
@@ -70,7 +75,7 @@ profile, not just the original one.
 
 ### Data flow
 ```
-GitHub Actions (cron, every 30 min, 04:00-11:00 UTC)
+GitHub Actions (cron, every 10 min, 04:00-11:00 UTC)
   → fetch.py: hits api-web.nhle.com/v1/score/{date} (live, no cache)
   → score.py: for each finished game, fetches gamecenter landing JSON
               (cached per game — stable once game is FINAL) and player
@@ -84,14 +89,24 @@ GitHub Pages serves index.html + queue.json per folder
   → browser fetches that folder's queue.json, plays videos via Brightcove embed
 ```
 
+**Workflow commit step bug (fixed 2026-09-24)**: the commit step used
+to `git add queue.json` — only the root file. Profile folders' own
+`queue.json` files (e.g. `Handyy/queue.json`) were silently never
+committed even though `score.py` generated them correctly every run.
+Now uses `git add -A` (still respects `.gitignore`, so `cache/`/`debug/`
+stay out) so every profile's files get committed automatically,
+including any future ones.
+
 ### Why live fetch, no cache on the score endpoint
 Recap video links (`threeMinRecap`, `condensedGame`) appear on games
 progressively as NHL publishes them through the morning — West coast
 games can finish very late (recap sometimes not ready until ~06:00-
-07:00 UTC). The workflow runs every 30 min specifically so games with
-recaps that weren't ready at 8am Finnish time appear if you check the
-page again later. Caching the score fetch would have blocked seeing
-new links appear. (`fetch_score(date, force=True)` in score.py.)
+07:00 UTC). The workflow runs every 10 min (raised from 30 min on
+2026-09-24, at user's request — confirmed no real risk to NHL's API or
+GitHub Actions at this volume) so games with recaps that weren't ready
+earlier appear if you check the page again later. Caching the score
+fetch would have blocked seeing new links appear.
+(`fetch_score(date, force=True)` in score.py.)
 
 ### Video source: Brightcove, in-page embed
 Account 6415718365001, player EXtG1xJ7H. No domain restriction —
@@ -156,6 +171,11 @@ The root/default profile applies none of this — see Profiles above.
   count seen last visit vs now for the same date. Explicitly NOT
   cross-device — user confirmed per-device is enough, decided against
   building a shared backend for this.
+- **Click/tap video to pause/play** (added 2026-09-24): video.js's own
+  built-in click-to-toggle is explicitly disabled
+  (`player.userActions({ click: false })`) and replaced with our own
+  handler on `#videowrap`, to avoid a double-toggle where one click
+  both played and immediately re-paused.
 
 ## Known constraints / things NOT built
 
@@ -168,10 +188,11 @@ The root/default profile applies none of this — see Profiles above.
 - GitHub Pages is public (free-tier private repos can't publish
   Pages) — repo was made public for this reason, confirmed nothing
   sensitive in it.
-- DST is not handled precisely — cron window (04:00-11:00 UTC) is a
-  fixed compromise covering both Finnish winter and summer time
-  reasonably, not exact.
-- Berdu (friend's) profile not built yet — see `session-temp.md`.
+- DST is not handled precisely — cron window (04:00-11:00 UTC, every
+  10 min) is a fixed compromise covering both Finnish winter and
+  summer time reasonably, not exact.
+- Berdu (friend's) profile not built yet — see `session-temp.md`. More
+  profiles beyond that are expected over time (user's stated plan).
 
 ## Files
 
@@ -201,7 +222,15 @@ The root/default profile applies none of this — see Profiles above.
   root is now unweighted/chronological/no-preferences, the original
   weighted experience moved to `/Handyy/`; replaced the text brand
   badge with the actual logo; removed the disabled-bar-until-start
-  behavior so the dropdown/any control works immediately.
+  behavior so the dropdown/any control works immediately. Later the
+  same day: fixed the logo missing on `/Handyy/` (asset wasn't copied,
+  only the HTML was); fixed the workflow only ever committing the root
+  `queue.json` (profile folders' queues were silently never committed
+  — `git add -A` now); raised the cron frequency to every 10 minutes;
+  added click/tap-to-pause on the video; fixed `Handyy/index.html`
+  lagging behind root after a code push (established the going-forward
+  rule: sync every profile's `index.html` in the same commit as any
+  root `index.html` change). User confirmed more profiles are coming.
 
 ## Picking this up next session
 
@@ -211,9 +240,18 @@ The root/default profile applies none of this — see Profiles above.
 3. If continuing UI work: remember local testing can't catch
    mobile-only bugs (orientation, touch, `pointer: coarse`) — expect
    to push and have the user test on their actual phone.
-4. If touching scoring: weights are in `config.json`, no code changes
-   needed for weight tuning, just re-run `python score.py {date}`
-   locally (cached landing/player data makes re-runs fast).
-5. Follow the user's CLAUDE.md workflow rules: explain plan in plain
+4. If touching scoring: weights are in `config.json` (Handyy's), no
+   code changes needed for weight tuning, just re-run
+   `python score.py {date}` locally (cached landing/player data makes
+   re-runs fast). **After a local test run, `git checkout -- queue.json
+   Handyy/queue.json` (etc.) before committing** — otherwise a local
+   test with an old date arg overwrites the live bot-updated data.
+5. If editing `index.html`: copy it into every profile folder
+   (`Handyy/`, and any others) in the SAME commit. It does not sync
+   itself — see the "Important" note under Profiles above. Forgetting
+   this caused a real bug once already.
+6. Adding another person's profile (expected, ongoing — user plans
+   more): follow the steps under Profiles above, it's a small task.
+7. Follow the user's CLAUDE.md workflow rules: explain plan in plain
    English, wait for "yes" before coding, one change at a time when
    fixing bugs, always give a plain-language test plan after changes.
