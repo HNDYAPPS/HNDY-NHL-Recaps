@@ -10,6 +10,7 @@ Outputs:
 """
 
 import json
+import shutil
 import sys
 from collections import Counter
 from pathlib import Path
@@ -19,14 +20,22 @@ import requests
 from fetch import CACHE_DIR, extract_games, fetch_score, yesterday_na
 
 ROOT = Path(__file__).parent
+
+# profile name -> (output folder, config file). Root "." is the default,
+# no-preference profile: chronological order, no scoring at all. Every
+# other profile gets its own folder + a copy of index.html, and is
+# ranked by config.json's weights.
+PROFILES = {
+    "handyy": ("Handyy", "config.json"),
+}
 LANDING_API = "https://api-web.nhle.com/v1/gamecenter/{game_id}/landing"
 PLAYER_API = "https://api-web.nhle.com/v1/player/{player_id}/landing"
 PLAYERS_CACHE = CACHE_DIR / "players.json"
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 
 
-def load_config() -> dict:
-    return json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+def load_config(filename: str = "config.json") -> dict:
+    return json.loads((ROOT / filename).read_text(encoding="utf-8"))
 
 
 def fetch_landing(game_id: int) -> dict:
@@ -179,7 +188,12 @@ def analyse(game: dict, landing: dict, players: dict, cfg: dict) -> dict:
     }
 
 
-def write_queue(date: str, total_games: int, ranked: list[dict]) -> None:
+def chronological_order(games: list[dict]) -> list[dict]:
+    """Sort by actual start time, no scoring/weighting at all."""
+    return sorted(games, key=lambda g: g["raw"].get("startTimeUTC", ""))
+
+
+def write_queue(out_dir: Path, date: str, total_games: int, ordered: list[dict]) -> None:
     queue = {
         "date": date,
         "totalGames": total_games,
@@ -192,18 +206,27 @@ def write_queue(date: str, total_games: int, ranked: list[dict]) -> None:
                 "shortVideoId": g["shortVideoId"],
                 "longVideoId": g["longVideoId"],
             }
-            for i, g in enumerate(ranked)
+            for i, g in enumerate(ordered)
         ],
     }
-    (ROOT / "queue.json").write_text(
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "queue.json").write_text(
         json.dumps(queue, indent=2), encoding="utf-8"
     )
 
 
-def write_debug(date: str, ranked: list[dict]) -> None:
+def sync_player_html(out_dir: Path) -> None:
+    """Copy the one canonical index.html into a profile folder verbatim.
+    Only ever edit the root index.html by hand."""
+    if out_dir == ROOT:
+        return
+    shutil.copyfile(ROOT / "index.html", out_dir / "index.html")
+
+
+def write_debug(profile: str, date: str, ranked: list[dict]) -> None:
     debug_dir = ROOT / "debug"
     debug_dir.mkdir(exist_ok=True)
-    lines = [f"Scores for {date}", ""]
+    lines = [f"Scores for {date} ({profile})", ""]
     for i, g in enumerate(ranked):
         d = g["debug"]
         lines.append(f"#{i + 1}  {d['score']:>6}  {d['result']}")
@@ -217,31 +240,43 @@ def write_debug(date: str, ranked: list[dict]) -> None:
         if extras:
             lines.append("      " + " | ".join(extras))
         lines.append("")
-    (debug_dir / f"scores-{date}.txt").write_text("\n".join(lines), encoding="utf-8")
+    (debug_dir / f"scores-{profile}-{date}.txt").write_text(
+        "\n".join(lines), encoding="utf-8"
+    )
 
 
 def main() -> None:
     date = sys.argv[1] if len(sys.argv) > 1 else yesterday_na()
-    cfg = load_config()
     players = load_players()
 
+    # Fetch/cache the shared game data ONCE, reused by every profile below.
     score = fetch_score(date, force=True)
     total_games = len(score.get("games", []))
     games = extract_games(score)
     games = [g for g in games if g["shortVideoId"]]  # no recap = nothing to watch
-
     for g in games:
-        landing = fetch_landing(g["gameId"])
-        g["debug"] = analyse(g, landing, players, cfg)
+        g["landing"] = fetch_landing(g["gameId"])
+
+    # Default profile (root): no preferences, no scoring at all — just
+    # the order games were actually played in.
+    ordered = chronological_order(games)
+    write_queue(ROOT, date, total_games, ordered)
+    print(f"Date: {date}   default: {len(ordered)} of {total_games} games, chronological, no scoring")
+
+    # Every other named profile: weighted ranking, its own folder + config.
+    for profile, (folder, config_file) in PROFILES.items():
+        cfg = load_config(config_file)
+        for g in games:
+            g["debug"] = analyse(g, g["landing"], players, cfg)
+        ranked = sorted(games, key=lambda g: g["debug"]["score"], reverse=True)
+        out_dir = ROOT / folder
+        write_queue(out_dir, date, total_games, ranked)
+        write_debug(profile, date, ranked)
+        sync_player_html(out_dir)
+        print(f"Date: {date}   {profile}: {len(ranked)} of {total_games} games, ranked -> {folder}/")
+
     save_players(players)
-
-    ranked = sorted(games, key=lambda g: g["debug"]["score"], reverse=True)
-    write_queue(date, total_games, ranked)
-    write_debug(date, ranked)
-
-    print(f"Date: {date}   games queued: {len(ranked)} of {total_games} total")
-    print("queue.json written (no spoilers)")
-    print(f"debug/scores-{date}.txt written (SPOILERS)")
+    print("queue.json files written (no spoilers); debug/*.txt has the breakdowns (SPOILERS)")
 
 
 if __name__ == "__main__":
