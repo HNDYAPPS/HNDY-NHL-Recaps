@@ -583,6 +583,13 @@
     $('videowrap').addEventListener('pointerdown', function () {
       if (isMobile() && started) showBar();
     });
+    // Disable video.js's own built-in click-to-toggle so our handler
+    // below is the only thing driving it (avoids a double-toggle where
+    // a single click both plays AND immediately pauses again).
+    try { player.userActions({ click: false }); } catch (e) {}
+    $('videowrap').addEventListener('click', function () {
+      togglePause();
+    });
 
     document.addEventListener('keydown', function (e) {
       if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT') e.target.blur();
