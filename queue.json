@@ -1,86 +1,30 @@
 {
-  "date": "2026-09-22",
-  "totalGames": 10,
+  "date": "2026-09-23",
+  "totalGames": 4,
   "games": [
     {
       "rank": 1,
-      "gameId": 2026010027,
-      "home": "NYR",
-      "away": "NYI",
-      "shortVideoId": "6405461823112",
-      "longVideoId": "6405461250112"
+      "gameId": 2026010035,
+      "home": "TOR",
+      "away": "OTT",
+      "shortVideoId": "6405517448112",
+      "longVideoId": "6405518887112"
     },
     {
       "rank": 2,
-      "gameId": 2026010025,
-      "home": "PIT",
-      "away": "DET",
-      "shortVideoId": "6405458857112",
-      "longVideoId": "6405460406112"
+      "gameId": 2026010036,
+      "home": "OTT",
+      "away": "TOR",
+      "shortVideoId": "6405518794112",
+      "longVideoId": "6405518229112"
     },
     {
       "rank": 3,
-      "gameId": 2026010029,
-      "home": "NSH",
-      "away": "TBL",
-      "shortVideoId": "6405462400112",
-      "longVideoId": "6405461607112"
-    },
-    {
-      "rank": 4,
-      "gameId": 2026010026,
-      "home": "CAR",
-      "away": "FLA",
-      "shortVideoId": "6405460865112",
-      "longVideoId": "6405459788112"
-    },
-    {
-      "rank": 5,
-      "gameId": 2026010023,
-      "home": "WPG",
-      "away": "EDM",
-      "shortVideoId": "6405462205112",
-      "longVideoId": "6405461800112"
-    },
-    {
-      "rank": 6,
-      "gameId": 2026010030,
-      "home": "LAK",
-      "away": "UTA",
-      "shortVideoId": "6405466914112",
-      "longVideoId": "6405467509112"
-    },
-    {
-      "rank": 7,
-      "gameId": 2026010024,
-      "home": "BUF",
-      "away": "CBJ",
-      "shortVideoId": "6405459878112",
-      "longVideoId": "6405459946112"
-    },
-    {
-      "rank": 8,
-      "gameId": 2026010032,
-      "home": "SJS",
-      "away": "VGK",
-      "shortVideoId": "6405466918112",
-      "longVideoId": "6405467409112"
-    },
-    {
-      "rank": 9,
-      "gameId": 2026010028,
-      "home": "BOS",
-      "away": "PHI",
-      "shortVideoId": "6405457819112",
-      "longVideoId": "6405456938112"
-    },
-    {
-      "rank": 10,
-      "gameId": 2026010031,
-      "home": "CGY",
-      "away": "VAN",
-      "shortVideoId": "6405463629112",
-      "longVideoId": "6405464908112"
+      "gameId": 2026010034,
+      "home": "DAL",
+      "away": "MIN",
+      "shortVideoId": "6405521322112",
+      "longVideoId": "6405520750112"
     }
   ]
 }
