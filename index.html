@@ -89,6 +89,8 @@
     flex-shrink: 0;
   }
   #line1 {
+    display: flex;
+    align-items: center;
     font-size: 30px;
     font-weight: 700;
     text-transform: uppercase;
@@ -100,6 +102,11 @@
   #teams {
     color: #ddd;
     margin-left: 16px;
+  }
+  #teams:not(:empty)::before {
+    content: '\00b7';
+    margin-right: 16px;
+    color: #666;
   }
   #line2 {
     font-size: 15px;
@@ -366,19 +373,30 @@
     scheduleHide();
   }
 
+  var newGameIds = []; // gameIds not seen on this device before this load
+
   function checkNewGames() {
     // Per-device only: compares against what THIS browser last saw for
     // this date. Doesn't know what you watched on another device.
+    // Tracks actual gameIds (not just a count) since re-ranking can
+    // reorder the whole list between loads, not just append at the end.
     try {
       var seen = JSON.parse(localStorage.getItem(SEEN_STORE) || '{}');
-      var prevCount = (seen.date === meta.date) ? (seen.gameCount || 0) : 0;
-      var diff = games.length - prevCount;
-      if (diff > 0 && prevCount > 0) {
+      var prevIds = (seen.date === meta.date && seen.gameIds) ? seen.gameIds : null;
+      if (prevIds) {
+        newGameIds = games
+          .map(function (g) { return g.gameId; })
+          .filter(function (id) { return prevIds.indexOf(id) === -1; });
+      }
+      if (newGameIds.length) {
         var badge = $('new-badge');
-        badge.textContent = '+' + diff + ' new';
+        badge.textContent = '+' + newGameIds.length + ' new';
         badge.classList.remove('hidden');
       }
-      localStorage.setItem(SEEN_STORE, JSON.stringify({ date: meta.date, gameCount: games.length }));
+      localStorage.setItem(SEEN_STORE, JSON.stringify({
+        date: meta.date,
+        gameIds: games.map(function (g) { return g.gameId; })
+      }));
     } catch (e) {}
   }
 
@@ -404,7 +422,14 @@
     games.forEach(function (g, i) {
       var opt = document.createElement('option');
       opt.value = i;
-      opt.textContent = (i + 1) + '. ' + g.away + ' @ ' + g.home;
+      var isNew = newGameIds.indexOf(g.gameId) !== -1;
+      // Prefix text too, not just color: native pickers on some mobile
+      // browsers ignore inline <option> styling entirely.
+      opt.textContent = (isNew ? '• ' : '') + (i + 1) + '. ' + g.away + ' @ ' + g.home;
+      if (isNew) {
+        opt.style.color = '#2a5';
+        opt.style.fontWeight = 'bold';
+      }
       sel.appendChild(opt);
     });
   }
