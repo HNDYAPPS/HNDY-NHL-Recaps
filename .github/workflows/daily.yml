@@ -2,11 +2,11 @@ name: Daily recap queue
 
 on:
   schedule:
-    # Every 30 min, 05:00-11:00 UTC. Covers roughly 07:00-13:00 Finnish
+    # Every 30 min, 04:00-11:00 UTC. Covers roughly 06:00-13:00 Finnish
     # time (both DST and winter), so recap videos that appear late
     # (West coast games especially) get picked up on a later run and
     # show up if you check the page again after your first watch.
-    - cron: "0,30 5-11 * * *"
+    - cron: "0,30 4-11 * * *"
   workflow_dispatch: {}
 
 permissions:
