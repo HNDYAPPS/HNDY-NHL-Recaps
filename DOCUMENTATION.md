@@ -52,6 +52,15 @@ Adding a new profile (e.g. a friend's): add one line to `PROFILES` in
 that folder, commit. No other code changes needed. See
 `session-temp.md` for the still-open "Berdu" (friend's) profile.
 
+**Important**: the profile-folder copy of `index.html` only refreshes
+when `score.py` actually runs (the cron, or a manual trigger) — it does
+NOT happen just because root `index.html` was edited and pushed. This
+caused a real bug (2026-09-24): a fix landed on the main page but was
+missing on `/Handyy/` for a while. Rule going forward, per user
+instruction — **fixes to `index.html` go to every profile folder in
+the same commit** (`cp index.html Handyy/index.html`, etc.), not left
+to wait for the next scheduled run.
+
 Why not client-side re-ranking instead (ship one dataset, let the
 browser sort it per person): the ranking score itself is spoiler-
 adjacent (a high score usually means OT/comeback/etc. happened), which
