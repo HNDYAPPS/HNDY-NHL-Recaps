@@ -20,6 +20,14 @@
     },
     {
       "rank": 3,
+      "gameId": 2026010033,
+      "home": "ANA",
+      "away": "LAK",
+      "shortVideoId": "6405525259112",
+      "longVideoId": "6405524090112"
+    },
+    {
+      "rank": 4,
       "gameId": 2026010034,
       "home": "DAL",
       "away": "MIN",
