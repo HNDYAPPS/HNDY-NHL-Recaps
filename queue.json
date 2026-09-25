@@ -65,6 +65,14 @@
       "away": "EDM",
       "shortVideoId": "6405603344112",
       "longVideoId": "6405602890112"
+    },
+    {
+      "rank": 9,
+      "gameId": 2026010039,
+      "home": "SJS",
+      "away": "ANA",
+      "shortVideoId": "6405605282112",
+      "longVideoId": "6405605283112"
     }
   ]
 }
