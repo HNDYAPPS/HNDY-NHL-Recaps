@@ -97,6 +97,14 @@
       "away": "CGY",
       "shortVideoId": "6405690122112",
       "longVideoId": "6405690586112"
+    },
+    {
+      "rank": 13,
+      "gameId": 2026010063,
+      "home": "VGK",
+      "away": "SJS",
+      "shortVideoId": "6405690164112",
+      "longVideoId": "6405689568112"
     }
   ]
 }
