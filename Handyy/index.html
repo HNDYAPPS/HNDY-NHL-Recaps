@@ -195,6 +195,10 @@
   }
   #toast.show { opacity: 1; }
   .hidden { display: none !important; }
+  /* Day arrows: plain clickable text either side of the date, same
+     size as the date itself. Dimmed when no older/newer day exists. */
+  .dayNav { cursor: pointer; padding: 0 6px; user-select: none; }
+  .dayNav.off { opacity: 0.25; cursor: default; }
 
   @media (max-width: 640px), (max-height: 640px) {
     /* Matches on width OR height so a phone stays in compact mode in
@@ -276,11 +280,11 @@
           <span id="new-badge" class="hidden"></span>
         </div>
         <div id="line2">
-          <span id="date"></span>
+          <span id="dayPrev" class="dayNav hidden" title="Previous day">&lt;</span><span id="date"></span><span id="dayNext" class="dayNav hidden" title="Next day">&gt;</span>
           <span id="totalGames"></span>
         </div>
       </div>
-      <div id="mobileLine"></div>
+      <div id="mobileLine"><span id="mDayPrev" class="dayNav hidden">&lt;</span><span id="mDate"></span><span id="mDayNext" class="dayNav hidden">&gt;</span><span id="mRest"></span></div>
     </div>
     <div id="controls">
       <select id="jump" title="Jump to game"></select>
@@ -432,7 +436,13 @@
   }
 
   function render() {
-    $('counter').textContent = 'Game ' + (idx + 1) + '/' + games.length;
+    var counterText = games.length
+      ? 'Game ' + (idx + 1) + '/' + games.length
+      : 'NO GAMES TODAY';
+    $('counter').textContent = counterText;
+    // Nothing to start on an empty day.
+    $('startShort').classList.toggle('hidden', !games.length);
+    $('startLong').classList.toggle('hidden', !games.length);
     var g = games[idx];
     $('teams').textContent = g ? g.away + ' @ ' + g.home : '';
     $('date').textContent = meta.date ? formatDate(meta.date) : '';
@@ -442,13 +452,65 @@
     $('long').classList.toggle('active', useLong);
     $('jump').value = idx;
 
-    var mobileParts = [];
-    if (meta.date) mobileParts.push(formatDate(meta.date));
-    mobileParts.push('Game ' + (idx + 1) + '/' + games.length);
+    $('mDate').textContent = meta.date ? formatDate(meta.date) : '';
+    var mobileParts = [counterText];
     if (g) mobileParts.push(g.away + ' @ ' + g.home);
     if (meta.totalGames) mobileParts.push(meta.totalGames + ' games today');
-    $('mobileLine').textContent = mobileParts.join(' · ');
+    $('mRest').textContent = ' · ' + mobileParts.join(' · ');
+    updateDayNav();
   }
+
+  // ---- Older dates: days/index.json lists every saved date ----
+  var dates = [];
+  var dayLoading = false; // ignore extra clicks while a day loads
+
+  function updateDayNav() {
+    var pos = dates.indexOf(meta.date);
+    var show = pos !== -1;
+    ['dayPrev', 'mDayPrev'].forEach(function (id) {
+      $(id).classList.toggle('hidden', !show);
+      $(id).classList.toggle('off', pos <= 0);
+    });
+    ['dayNext', 'mDayNext'].forEach(function (id) {
+      $(id).classList.toggle('hidden', !show);
+      $(id).classList.toggle('off', pos >= dates.length - 1);
+    });
+  }
+
+  function applyQueue(q) {
+    games = q.games || [];
+    meta = { date: q.date || '', totalGames: q.totalGames || 0 };
+    idx = 0;
+  }
+
+  function changeDay(delta) {
+    var pos = dates.indexOf(meta.date);
+    var target = dates[pos + delta];
+    if (pos === -1 || !target || dayLoading) return;
+    dayLoading = true;
+    fetch('days/' + target + '.json?t=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (q) {
+        dayLoading = false;
+        applyQueue(q);
+        loadState();
+        newGameIds = [];
+        $('new-badge').classList.add('hidden');
+        fillJumpMenu();
+        render();
+        if (!player) return;
+        if (started && games.length) loadCurrent();
+        else player.pause();
+      })
+      .catch(function () { dayLoading = false; toast('Day load failed'); });
+  }
+
+  ['dayPrev', 'mDayPrev'].forEach(function (id) {
+    $(id).addEventListener('click', function () { changeDay(-1); });
+  });
+  ['dayNext', 'mDayNext'].forEach(function (id) {
+    $(id).addEventListener('click', function () { changeDay(1); });
+  });
 
   function fixPlayerSize() {
     // Brightcove's player sets its own inline sizing (a fixed aspect
@@ -622,12 +684,16 @@
   fetch('queue.json?t=' + Date.now())
     .then(function (r) { return r.json(); })
     .then(function (q) {
-      games = q.games || [];
-      meta = { date: q.date || '', totalGames: q.totalGames || 0 };
+      applyQueue(q);
       loadState();
       checkNewGames();
       fillJumpMenu();
       render();
+      // Saved-days list is optional: missing file = no day arrows.
+      fetch('days/index.json?t=' + Date.now())
+        .then(function (r) { return r.json(); })
+        .then(function (d) { dates = d.dates || []; updateDayNav(); })
+        .catch(function () {});
       videojs.getPlayer('player').ready(function () {
         player = this;
         wire();
