@@ -1,0 +1,38 @@
+{
+  "date": "2026-09-23",
+  "totalGames": 4,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026010035,
+      "home": "TOR",
+      "away": "OTT",
+      "shortVideoId": "6405517448112",
+      "longVideoId": "6405518887112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026010036,
+      "home": "OTT",
+      "away": "TOR",
+      "shortVideoId": "6405518794112",
+      "longVideoId": "6405518229112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026010034,
+      "home": "DAL",
+      "away": "MIN",
+      "shortVideoId": "6405521322112",
+      "longVideoId": "6405520750112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026010033,
+      "home": "ANA",
+      "away": "LAK",
+      "shortVideoId": "6405525259112",
+      "longVideoId": "6405524090112"
+    }
+  ]
+}
