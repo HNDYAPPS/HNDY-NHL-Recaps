@@ -243,6 +243,7 @@ The root/default profile applies none of this — see Profiles above.
 | `index.html` | The **canonical** player (single file, vanilla JS, no build step) — only ever edit this copy, at the repo root |
 | `Handyy/` | Generated: `index.html` (copy, don't edit) + `queue.json` (Hannu's weighted profile) |
 | `logo_hndyapps_black.png` / `logo_hndyapps_white.png` | Brand logo; black (dark-background) version is the one used in the UI |
+| `favicon-32.png` / `icon-192.png` / `apple-touch-icon.png` | Site icons (tab, bookmarks, home screen), made by user; copied to profiles via `PLAYER_ASSETS` |
 | `test.html` | Phase 0 scratch file, Brightcove embed proof-of-concept — not used by the real player, kept for reference |
 | `requirements.txt` | Python deps (`requests`) |
 | `.github/workflows/daily.yml` | The cron job (runs `score.py` once, which handles every profile internally) |
@@ -273,7 +274,7 @@ The root/default profile applies none of this — see Profiles above.
 - **2026-09-28**: Day archive (`days/`, backfilled from 20 Sep) + `<` `>`
   day arrows; "NO GAMES TODAY" on empty days; Liiga recaps via YouTube
   after NHL (all on root, JYP only on Handyy), subtitles off; workflow
-  actions bumped to checkout@v5 / setup-python@v6 (Node 24 warning).
+  actions bumped to checkout@v5 / setup-python@v6 (Node 24 warning); HNDYAPPS site icons.
 
 ## Picking this up next session
 
