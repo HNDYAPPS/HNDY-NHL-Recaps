@@ -209,10 +209,23 @@ def write_queue(out_dir: Path, date: str, total_games: int, ordered: list[dict])
             for i, g in enumerate(ordered)
         ],
     }
-    out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "queue.json").write_text(
-        json.dumps(queue, indent=2), encoding="utf-8"
+    text = json.dumps(queue, indent=2)
+
+    # Archive: every date gets its own permanent copy in days/, plus
+    # days/index.json listing all saved dates (oldest first) so the
+    # player can step back through them.
+    days_dir = out_dir / "days"
+    days_dir.mkdir(parents=True, exist_ok=True)
+    (days_dir / f"{date}.json").write_text(text, encoding="utf-8")
+    dates = sorted(p.stem for p in days_dir.glob("????-??-??.json"))
+    (days_dir / "index.json").write_text(
+        json.dumps({"dates": dates}, indent=2), encoding="utf-8"
     )
+
+    # queue.json = newest day only. Re-running an older date (backfill)
+    # must not replace it.
+    if date == dates[-1]:
+        (out_dir / "queue.json").write_text(text, encoding="utf-8")
 
 
 PLAYER_ASSETS = ["index.html", "logo_hndyapps_black.png"]
