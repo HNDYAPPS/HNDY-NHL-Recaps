@@ -195,6 +195,14 @@
   }
   #toast.show { opacity: 1; }
   .hidden { display: none !important; }
+  /* Liiga games play in YouTube's player, laid over the Brightcove one.
+     visibility (not display:none) so the iframe keeps loading while
+     hidden. The shield catches clicks so they never reach YouTube's
+     own UI (title links, suggestions): click = pause/play instead. */
+  #ytwrap { position: absolute; inset: 0; z-index: 2; background: #000; }
+  #ytwrap.ythide { visibility: hidden; pointer-events: none; }
+  #ytwrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  #ytShield { position: absolute; inset: 0; }
   /* Day arrows: plain clickable text either side of the date, same
      size as the date itself. Dimmed when no older/newer day exists. */
   .dayNav { cursor: pointer; padding: 0 6px; user-select: none; }
@@ -263,6 +271,7 @@
       data-embed="default"
       playsinline>
     </video-js>
+    <div id="ytwrap" class="ythide"><div id="yt"></div><div id="ytShield"></div></div>
     <div id="toast"></div>
     <div id="overlay">
       <img id="overlayLogo" src="logo_hndyapps_black.png" alt="HNDYAPPS">
@@ -363,7 +372,7 @@
     if (!isMobile()) return;
     clearTimeout(hideTimer);
     hideTimer = setTimeout(function () {
-      if (started && player && !player.paused()) {
+      if (started && player && !M().paused()) {
         $('bar').classList.add('auto-hidden');
       }
     }, HIDE_DELAY);
@@ -426,13 +435,18 @@
       var isNew = newGameIds.indexOf(g.gameId) !== -1;
       // Prefix text too, not just color: native pickers on some mobile
       // browsers ignore inline <option> styling entirely.
-      opt.textContent = (isNew ? '• ' : '') + (i + 1) + '. ' + g.away + ' @ ' + g.home;
+      opt.textContent = (isNew ? '• ' : '') + (i + 1) + '. ' + teamsLabel(g);
       if (isNew) {
         opt.style.color = '#2a5';
         opt.style.fontWeight = 'bold';
       }
       sel.appendChild(opt);
     });
+  }
+
+  function teamsLabel(g) {
+    // Liiga titles are "Home - Away"; NHL convention is "Away @ Home".
+    return g.youtubeId ? 'Liiga: ' + g.home + ' – ' + g.away : g.away + ' @ ' + g.home;
   }
 
   function render() {
@@ -444,7 +458,7 @@
     $('startShort').classList.toggle('hidden', !games.length);
     $('startLong').classList.toggle('hidden', !games.length);
     var g = games[idx];
-    $('teams').textContent = g ? g.away + ' @ ' + g.home : '';
+    $('teams').textContent = g ? teamsLabel(g) : '';
     $('date').textContent = meta.date ? formatDate(meta.date) : '';
     $('totalGames').textContent = meta.totalGames
       ? '· ' + meta.totalGames + ' games today'
@@ -454,7 +468,7 @@
 
     $('mDate').textContent = meta.date ? formatDate(meta.date) : '';
     var mobileParts = [counterText];
-    if (g) mobileParts.push(g.away + ' @ ' + g.home);
+    if (g) mobileParts.push(teamsLabel(g));
     if (meta.totalGames) mobileParts.push(meta.totalGames + ' games today');
     $('mRest').textContent = ' · ' + mobileParts.join(' · ');
     updateDayNav();
@@ -478,7 +492,10 @@
   }
 
   function applyQueue(q) {
-    games = q.games || [];
+    var liiga = (q.liiga || []).map(function (l) {
+      return { gameId: 'yt-' + l.youtubeId, home: l.home, away: l.away, youtubeId: l.youtubeId };
+    });
+    games = (q.games || []).concat(liiga); // NHL always first
     meta = { date: q.date || '', totalGames: q.totalGames || 0 };
     idx = 0;
   }
@@ -500,7 +517,7 @@
         render();
         if (!player) return;
         if (started && games.length) loadCurrent();
-        else player.pause();
+        else M().pause();
       })
       .catch(function () { dayLoading = false; toast('Day load failed'); });
   }
@@ -539,6 +556,93 @@
     force(player.tech_ && player.tech_.el_);
   }
 
+  // ---- Two players: Brightcove (NHL) and YouTube (Liiga) ----
+  // Controls talk to M(), which is whichever one is showing now.
+  var mode = 'bc';
+  var ytPlayer = null;
+  var ytReady = false;
+  var ytPending = null; // Liiga video asked for before YouTube was ready
+
+  var bcM = {
+    play: function () { player.play(); },
+    pause: function () { if (player) player.pause(); },
+    paused: function () { return !player || player.paused(); },
+    time: function (t) { return t === undefined ? player.currentTime() : player.currentTime(t); },
+    duration: function () { return player.duration(); }
+  };
+  var ytM = {
+    play: function () { if (ytReady) ytPlayer.playVideo(); },
+    pause: function () { if (ytReady) ytPlayer.pauseVideo(); },
+    paused: function () {
+      if (!ytReady) return true;
+      var st = ytPlayer.getPlayerState();
+      return st !== 1 && st !== 3; // 1 playing, 3 buffering
+    },
+    time: function (t) {
+      if (!ytReady) return 0;
+      if (t === undefined) return ytPlayer.getCurrentTime();
+      ytPlayer.seekTo(t, true);
+    },
+    duration: function () { return ytReady ? ytPlayer.getDuration() : 0; }
+  };
+  function M() { return mode === 'yt' ? ytM : bcM; }
+
+  window.onYouTubeIframeAPIReady = function () {
+    ytPlayer = new YT.Player('yt', {
+      width: '100%',
+      height: '100%',
+      playerVars: {
+        controls: 0, disablekb: 1, fs: 0, rel: 0, iv_load_policy: 3,
+        modestbranding: 1, playsinline: 1
+      },
+      events: {
+        onReady: function () {
+          ytReady = true;
+          if (ytPending) { var id = ytPending; ytPending = null; ytPlayer.loadVideoById(id); }
+        },
+        onStateChange: function (e) {
+          if (mode !== 'yt') return;
+          if (e.data === 1) { $('pause').textContent = '⏸'; scheduleHide(); }
+          else if (e.data === 2) {
+            $('pause').textContent = '▶';
+            clearTimeout(hideTimer);
+            $('bar').classList.remove('auto-hidden');
+          } else if (e.data === 0 && started && !switching) go(1);
+        }
+      }
+    });
+  };
+  (function () {
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  })();
+
+  // Switch ~1 s before the end so YouTube's end screen (suggested
+  // videos, possibly with scores) never shows.
+  setInterval(function () {
+    if (mode !== 'yt' || !ytReady || switching || !started) return;
+    var d = ytM.duration();
+    if (d && !ytM.paused() && d - ytM.time() < END_MARGIN) go(1);
+  }, 250);
+
+  function loadYouTube(id) {
+    if (player) player.pause();
+    mode = 'yt';
+    $('ytwrap').classList.remove('ythide');
+    switching = true;
+    setTimeout(function () { switching = false; }, 1500);
+    if (ytReady) ytPlayer.loadVideoById(id);
+    else { ytPending = id; toast('Loading YouTube…'); }
+  }
+
+  function showBrightcove() {
+    if (mode === 'yt' && ytReady) ytPlayer.stopVideo();
+    mode = 'bc';
+    ytPending = null;
+    $('ytwrap').classList.add('ythide');
+  }
+
   function currentVideoId() {
     var g = games[idx];
     if (!g) return null;
@@ -547,12 +651,17 @@
   }
 
   function loadCurrent() {
-    var vid = currentVideoId();
+    var g = games[idx];
     render();
     saveState();
+    if (g && g.youtubeId) { loadYouTube(g.youtubeId); return; }
+    showBrightcove();
+    var vid = currentVideoId();
     if (!vid) { toast('No video'); return; }
     switching = true;
     player.catalog.getVideo(vid, function (error, video) {
+      // Moved on to a Liiga game while this was loading: don't play.
+      if (mode !== 'bc') return;
       if (error) {
         toast('Video load failed, skipping');
         switching = false;
@@ -582,7 +691,7 @@
     ensureStarted(false);
     var n = idx + delta;
     if (n < 0) { toast('First game'); return; }
-    if (n >= games.length) { toast('All done'); player.pause(); return; }
+    if (n >= games.length) { toast('All done'); M().pause(); return; }
     idx = n;
     loadCurrent();
   }
@@ -596,14 +705,16 @@
 
   function togglePause() {
     if (!started) { ensureStarted(false); loadCurrent(); return; }
-    if (player.paused()) { player.play(); $('pause').textContent = '⏸'; }
-    else { player.pause(); $('pause').textContent = '▶'; }
+    if (M().paused()) { M().play(); $('pause').textContent = '⏸'; }
+    else { M().pause(); $('pause').textContent = '▶'; }
   }
 
   function toggleLong() {
     if (!started) { ensureStarted(true); loadCurrent(); return; }
     useLong = !useLong;
     toast(useLong ? 'Long recap' : 'Short recap');
+    // Liiga has one video per game: keep playing, setting applies to NHL.
+    if (mode === 'yt') { render(); saveState(); return; }
     loadCurrent();
   }
 
@@ -621,11 +732,11 @@
     $('next').onclick = function () { go(1); };
     $('back').onclick = function () {
       if (!started) { ensureStarted(false); loadCurrent(); return; }
-      player.currentTime(Math.max(0, player.currentTime() - 5));
+      M().time(Math.max(0, M().time() - 5));
     };
     $('fwd').onclick = function () {
       if (!started) { ensureStarted(false); loadCurrent(); return; }
-      player.currentTime(Math.min(player.duration() || Infinity, player.currentTime() + 5));
+      M().time(Math.min(M().duration() || Infinity, M().time() + 5));
     };
     $('pause').onclick = togglePause;
     $('long').onclick = toggleLong;
@@ -667,14 +778,15 @@
     });
 
     player.on('timeupdate', function () {
-      if (switching || !started) return;
+      if (switching || !started || mode !== 'bc') return;
       var d = player.duration();
       if (d && d - player.currentTime() < END_MARGIN) go(1);
     });
-    player.on('ended', function () { if (!switching && started) go(1); });
+    player.on('ended', function () { if (!switching && started && mode === 'bc') go(1); });
     player.on('loadedmetadata', fixPlayerSize);
     player.on('play', function () { $('pause').textContent = '⏸'; scheduleHide(); fixPlayerSize(); });
     player.on('pause', function () {
+      if (mode !== 'bc') return;
       $('pause').textContent = '▶';
       clearTimeout(hideTimer);
       $('bar').classList.remove('auto-hidden');
