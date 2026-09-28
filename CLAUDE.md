@@ -74,6 +74,12 @@ those go to a separate debug log.
 GitHub Actions workflow running the bot ~10:00 Finnish time and committing
 queue.json. Date = yesterday in North American time.
 
+## Additions after Phase 4 (built 2026-09-28)
+- Day archive: days/{date}.json per profile, player < > day arrows.
+- Liiga recaps from YouTube @Liiga1975 after NHL games
+  (root: all games, Handyy: JYP only via config liigaTeams).
+Details in DOCUMENTATION.md.
+
 # context-mode — MANDATORY routing rules
 
 You have context-mode MCP tools available. These rules are NOT optional — they protect your context window from flooding. A single unrouted command can dump 56 KB into context and waste the entire session.

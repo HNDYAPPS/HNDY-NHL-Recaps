@@ -81,12 +81,17 @@ GitHub Actions (cron, every 10 min, 04:00-11:00 UTC)
               (cached per game — stable once game is FINAL) and player
               nationality (cached forever in cache/players.json) ONCE,
               shared across all profiles
-  → per profile: writes queue.json (rank, teams, video IDs, date,
+  → per profile: writes days/{date}.json (rank, teams, video IDs, date,
               totalGames — NO scores/results, those go in
-              debug/scores-{profile}-{date}.txt) to that profile's folder
-  → commits changed queue.json files (and any regenerated index.html copies)
-GitHub Pages serves index.html + queue.json per folder
-  → browser fetches that folder's queue.json, plays videos via Brightcove embed
+              debug/scores-{profile}-{date}.txt), rebuilds days/index.json,
+              copies the NEWEST day to queue.json
+  → liiga.py: reads @Liiga1975 YouTube feed, merges recaps into liiga.json,
+              score.py adds each date's Liiga recaps to days/{date}.json
+              under a separate "liiga" key (root: all, Handyy: JYP only)
+  → commits all changed files (git add -A)
+GitHub Pages serves index.html + queue.json + days/ per folder
+  → browser loads queue.json (newest day), < > arrows load days/{date}.json;
+    NHL plays via Brightcove, then Liiga via YouTube IFrame API
 ```
 
 **Workflow commit step bug (fixed 2026-09-24)**: the commit step used
@@ -113,6 +118,19 @@ Account 6415718365001, player EXtG1xJ7H. No domain restriction —
 confirmed working on GitHub Pages. Video ID = the trailing number in
 `threeMinRecap`/`condensedGame` paths from the score API (regex
 `(\d{10,})$`).
+
+### Day archive + Liiga (added 2026-09-28)
+- **days/**: every scored date is kept forever as `days/{date}.json`;
+  `days/index.json` lists them. `queue.json` = copy of the newest day,
+  so re-running an old date (`python score.py 2026-09-20`) is a safe
+  backfill that never replaces today. Backfilled from 2026-09-20.
+- **Liiga**: `liiga.py` reads the public channel feed (no key, channel
+  `UCGxrUE2U-ncnBf4vDww-gAQ`). Feed only lists ~15 newest uploads, so
+  every "Ottelukooste: Home − Away | D.M.YYYY" recap seen is stored in
+  `liiga.json` and stays on its date. Titles carry no scores. Re-synced
+  into day files every run, so late uploads still land. Profile filter
+  = `liigaTeams` in its config (Handyy: `["JYP"]`); root gets all.
+  Liiga lives in a separate `"liiga"` key, always played after NHL.
 
 ### Scoring (config.json — used by the Handyy profile only)
 Weighted sum of: goal count, margin (1-goal and 2-goal bonuses),
@@ -177,6 +195,20 @@ The root/default profile applies none of this — see Profiles above.
   handler on `#videowrap`, to avoid a double-toggle where one click
   both played and immediately re-paused.
 
+- **Day arrows** (added 2026-09-28): plain clickable `<` `>` text
+  either side of the date, same size as the date (user's choice, not
+  buttons). Dimmed at oldest/newest day. New day starts at Game 1.
+- **Empty day** shows "NO GAMES TODAY" (was "Game 1/0"), start
+  buttons hidden.
+- **Liiga via YouTube** (added 2026-09-28): `M()` adapter routes all
+  controls to Brightcove or YouTube, whichever is showing. YouTube
+  iframe sits over the video in `#ytwrap` (hidden with `visibility`,
+  not `display:none`, so it keeps loading). `#ytShield` catches clicks
+  so YouTube's own UI/links are never reachable. Switches 1 s before
+  the end (250 ms poll) so the end screen with suggestions never shows.
+  Subtitles forced off (`cc_load_policy: 0` + `unloadModule('captions')`
+  on play). Long button does nothing on Liiga (one video per game).
+
 ## Known constraints / things NOT built
 
 - No threshold/filtering — every game with a recap goes in the queue.
@@ -191,6 +223,10 @@ The root/default profile applies none of this — see Profiles above.
 - DST is not handled precisely — cron window (04:00-11:00 UTC, every
   10 min) is a fixed compromise covering both Finnish winter and
   summer time reasonably, not exact.
+- Day arrows are text, not focusable — no TV-remote navigation.
+- Liiga recaps older than the feed's ~15 newest can't be backfilled.
+- A pause every ~1 s on the user's PC turned out to be a Bluetooth
+  speaker sending pause, not the code — check that first if it recurs.
 - Berdu (friend's) profile not built yet — see `session-temp.md`. More
   profiles beyond that are expected over time (user's stated plan).
 
@@ -200,7 +236,10 @@ The root/default profile applies none of this — see Profiles above.
 |---|---|
 | `fetch.py` | Fetches/caches score JSON, extracts finished games + video IDs |
 | `score.py` | Scores games per profile, writes each profile's `queue.json` + `debug/scores-{profile}-{date}.txt`, copies `index.html` into non-root profile folders |
-| `config.json` | Weights + favourite teams — currently the Handyy profile's config |
+| `config.json` | Weights + favourite teams + `liigaTeams` — currently the Handyy profile's config |
+| `liiga.py` | Reads Liiga YouTube feed, keeps `liiga.json`, groups recaps by date + team filter |
+| `liiga.json` | Committed — every Liiga recap ever seen (videoId, teams, date) |
+| `days/` (each profile folder) | Committed — one file per date + `index.json`; `queue.json` = newest day |
 | `index.html` | The **canonical** player (single file, vanilla JS, no build step) — only ever edit this copy, at the repo root |
 | `Handyy/` | Generated: `index.html` (copy, don't edit) + `queue.json` (Hannu's weighted profile) |
 | `logo_hndyapps_black.png` / `logo_hndyapps_white.png` | Brand logo; black (dark-background) version is the one used in the UI |
@@ -231,6 +270,10 @@ The root/default profile applies none of this — see Profiles above.
   lagging behind root after a code push (established the going-forward
   rule: sync every profile's `index.html` in the same commit as any
   root `index.html` change). User confirmed more profiles are coming.
+- **2026-09-28**: Day archive (`days/`, backfilled from 20 Sep) + `<` `>`
+  day arrows; "NO GAMES TODAY" on empty days; Liiga recaps via YouTube
+  after NHL (all on root, JYP only on Handyy), subtitles off; workflow
+  actions bumped to checkout@v5 / setup-python@v6 (Node 24 warning).
 
 ## Picking this up next session
 
@@ -243,9 +286,10 @@ The root/default profile applies none of this — see Profiles above.
 4. If touching scoring: weights are in `config.json` (Handyy's), no
    code changes needed for weight tuning, just re-run
    `python score.py {date}` locally (cached landing/player data makes
-   re-runs fast). **After a local test run, `git checkout -- queue.json
-   Handyy/queue.json` (etc.) before committing** — otherwise a local
-   test with an old date arg overwrites the live bot-updated data.
+   re-runs fast). Local runs also write `days/` and `liiga.json`: for a
+   pure test, use a scratch copy of the repo, or `git checkout --` those
+   files before committing. An old date arg no longer replaces
+   `queue.json` (only the newest day does).
 5. If editing `index.html`: copy it into every profile folder
    (`Handyy/`, and any others) in the SAME commit. It does not sync
    itself — see the "Important" note under Profiles above. Forgetting
