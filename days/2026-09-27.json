@@ -1,5 +1,12 @@
 {
   "date": "2026-09-27",
   "totalGames": 0,
-  "games": []
+  "games": [],
+  "liiga": [
+    {
+      "youtubeId": "5LPMHcOtkfk",
+      "home": "Ilves",
+      "away": "TPS"
+    }
+  ]
 }
