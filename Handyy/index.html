@@ -593,7 +593,7 @@
       height: '100%',
       playerVars: {
         controls: 0, disablekb: 1, fs: 0, rel: 0, iv_load_policy: 3,
-        modestbranding: 1, playsinline: 1
+        modestbranding: 1, playsinline: 1, cc_load_policy: 0
       },
       events: {
         onReady: function () {
@@ -602,7 +602,13 @@
         },
         onStateChange: function (e) {
           if (mode !== 'yt') return;
-          if (e.data === 1) { $('pause').textContent = '⏸'; scheduleHide(); }
+          if (e.data === 1) {
+            $('pause').textContent = '⏸';
+            scheduleHide();
+            // Channel can force subtitles on despite cc_load_policy;
+            // unloading the captions module turns them off for real.
+            try { ytPlayer.unloadModule('captions'); ytPlayer.unloadModule('cc'); } catch (err) {}
+          }
           else if (e.data === 2) {
             $('pause').textContent = '▶';
             clearTimeout(hideTimer);
