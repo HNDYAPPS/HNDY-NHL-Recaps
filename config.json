@@ -13,5 +13,6 @@
     "penaltyMinute": 0.1,
     "favouriteTeam": 5.0,
     "finnishPoint": 2.0
-  }
+  },
+  "liigaTeams": ["JYP"]
 }

@@ -17,6 +17,7 @@ from pathlib import Path
 
 import requests
 
+import liiga
 from fetch import CACHE_DIR, extract_games, fetch_score, yesterday_na
 
 ROOT = Path(__file__).parent
@@ -209,23 +210,44 @@ def write_queue(out_dir: Path, date: str, total_games: int, ordered: list[dict])
             for i, g in enumerate(ordered)
         ],
     }
-    text = json.dumps(queue, indent=2)
-
-    # Archive: every date gets its own permanent copy in days/, plus
-    # days/index.json listing all saved dates (oldest first) so the
-    # player can step back through them.
+    # Archive: every date gets its own permanent copy in days/.
     days_dir = out_dir / "days"
     days_dir.mkdir(parents=True, exist_ok=True)
-    (days_dir / f"{date}.json").write_text(text, encoding="utf-8")
+    (days_dir / f"{date}.json").write_text(
+        json.dumps(queue, indent=2), encoding="utf-8"
+    )
+    refresh_index_and_queue(out_dir)
+
+
+def refresh_index_and_queue(out_dir: Path) -> None:
+    """days/index.json lists all saved dates (oldest first) so the
+    player can step back through them. queue.json = copy of the newest
+    day, so re-running an older date (backfill) never replaces it."""
+    days_dir = out_dir / "days"
     dates = sorted(p.stem for p in days_dir.glob("????-??-??.json"))
     (days_dir / "index.json").write_text(
         json.dumps({"dates": dates}, indent=2), encoding="utf-8"
     )
+    if dates:
+        shutil.copyfile(days_dir / f"{dates[-1]}.json", out_dir / "queue.json")
 
-    # queue.json = newest day only. Re-running an older date (backfill)
-    # must not replace it.
-    if date == dates[-1]:
-        (out_dir / "queue.json").write_text(text, encoding="utf-8")
+
+def sync_liiga(out_dir: Path, by_date: dict) -> None:
+    """Put each date's Liiga recaps into that day's file under a
+    separate "liiga" key (always played after NHL). Re-done every run,
+    so a recap uploaded late still lands on its day. A date with Liiga
+    but no NHL games gets a day file of its own."""
+    days_dir = out_dir / "days"
+    days_dir.mkdir(parents=True, exist_ok=True)
+    for date, recaps in by_date.items():
+        f = days_dir / f"{date}.json"
+        if f.exists():
+            day = json.loads(f.read_text(encoding="utf-8"))
+        else:
+            day = {"date": date, "totalGames": 0, "games": []}
+        day["liiga"] = recaps
+        f.write_text(json.dumps(day, indent=2, ensure_ascii=False), encoding="utf-8")
+    refresh_index_and_queue(out_dir)
 
 
 PLAYER_ASSETS = ["index.html", "logo_hndyapps_black.png"]
@@ -280,6 +302,8 @@ def main() -> None:
     # the order games were actually played in.
     ordered = chronological_order(games)
     write_queue(ROOT, date, total_games, ordered)
+    liiga_store = liiga.update_store()
+    sync_liiga(ROOT, liiga.recaps_by_date(liiga_store))  # all Liiga games
     print(f"Date: {date}   default: {len(ordered)} of {total_games} games, chronological, no scoring")
 
     # Every other named profile: weighted ranking, its own folder + config.
@@ -290,6 +314,10 @@ def main() -> None:
         ranked = sorted(games, key=lambda g: g["debug"]["score"], reverse=True)
         out_dir = ROOT / folder
         write_queue(out_dir, date, total_games, ranked)
+        # Profile's own Liiga team filter; key missing = no Liiga at all.
+        teams = cfg.get("liigaTeams")
+        if teams:
+            sync_liiga(out_dir, liiga.recaps_by_date(liiga_store, teams))
         write_debug(profile, date, ranked)
         sync_player_html(out_dir)
         print(f"Date: {date}   {profile}: {len(ranked)} of {total_games} games, ranked -> {folder}/")
