@@ -250,7 +250,10 @@ def sync_liiga(out_dir: Path, by_date: dict) -> None:
     refresh_index_and_queue(out_dir)
 
 
-PLAYER_ASSETS = ["index.html", "logo_hndyapps_black.png"]
+PLAYER_ASSETS = [
+    "index.html", "logo_hndyapps_black.png",
+    "favicon-32.png", "icon-192.png", "apple-touch-icon.png",
+]
 
 
 def sync_player_html(out_dir: Path) -> None:
