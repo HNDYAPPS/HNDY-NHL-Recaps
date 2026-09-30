@@ -42,5 +42,17 @@
       "shortVideoId": "6405943511112",
       "longVideoId": "6405943904112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "MgCnk4i_VVY",
+      "home": "Jokerit",
+      "away": "HPK"
+    },
+    {
+      "youtubeId": "1YDD1rexRv0",
+      "home": "Ilves",
+      "away": "Jukurit"
+    }
   ]
 }
