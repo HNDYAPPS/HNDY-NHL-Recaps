@@ -134,7 +134,8 @@ confirmed working on GitHub Pages. Video ID = the trailing number in
 
 ### Chromecast (added 2026-09-30)
 Native cast, not tab mirroring. Google Cast web sender SDK
-(`cast_sender.js?loadCastFramework=1`) + `<google-cast-launcher id="castBtn">`
+(`cast_sender.js?loadCastFramework=1`) + own `<button id="castBtn">` (Google's
+`<google-cast-launcher>` hid itself with display:none; we call `requestSession()`)
 in the bar, hidden until `__onGCastApiAvailable(true)`, so only Chrome
 (desktop/Android) and Chromium browsers with Cast ever show it. Receiver is
 Google's Default Media Receiver: no receiver code, no developer account.

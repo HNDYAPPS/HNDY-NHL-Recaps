@@ -261,23 +261,11 @@
     button { font-size: 13px; min-width: 34px; padding: 0 6px; }
     .group { gap: 4px; }
   }
-  /* Chromecast: SDK renders <google-cast-launcher> as an icon; we size
-     it like a bar button. Hidden until the SDK says Cast is available,
-     so non-Chrome browsers never see an empty box. */
-  #castBtn {
-    display: inline-block;
-    width: 66px;
-    height: 56px;
-    padding: 10px 14px;
-    box-sizing: border-box;
-    background: #1c1c1c;
-    border: 2px solid #3a3a3a;
-    border-radius: 10px;
-    cursor: pointer;
-    --disconnected-color: #eee;
-    --connected-color: #2a5;
-  }
-  #castBtn:hover { background: #333; border-color: #888; }
+  /* Chromecast: our own bar button (Google's <google-cast-launcher>
+     element hid itself with display:none even with devices found).
+     Hidden until the SDK reports a Chromecast on the network, so
+     non-Chrome browsers never see it. Green (.active) while connected. */
+  #castBtn svg { width: 26px; height: 26px; fill: currentColor; vertical-align: middle; }
   /* Shown over the video area while casting. Above ytwrap (2), below
      the start overlay (10) and toast (5). */
   #castScreen {
@@ -297,7 +285,7 @@
   }
   #castScreen svg { width: 96px; height: 96px; fill: #2a5; }
   @media (max-width: 640px), (max-height: 640px) {
-    #castBtn { width: 40px; height: 40px; padding: 7px 8px; }
+    #castBtn svg { width: 18px; height: 18px; }
     #castScreen { font-size: 18px; }
     #castScreen svg { width: 56px; height: 56px; }
   }
@@ -356,7 +344,7 @@
       <div class="group">
         <button id="long" title="Short / long recap (L)">Long</button>
         <button id="fs" title="Fullscreen (F)">⛶</button>
-        <google-cast-launcher id="castBtn" class="hidden" title="Cast to TV"></google-cast-launcher>
+        <button id="castBtn" class="hidden" title="Cast to TV"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></button>
       </div>
     </div>
   </div>
@@ -737,6 +725,12 @@
     };
     showBtn(castCtx.getCastState());
     castCtx.addEventListener(cast.framework.CastContextEventType.CAST_STATE_CHANGED, function (e) { showBtn(e.castState); });
+    // Opens Chrome's device picker (or "Stop casting" while connected).
+    $('castBtn').onclick = function () {
+      castCtx.requestSession().catch(function (err) {
+        if (err !== 'cancel') console.error('cast requestSession', err);
+      });
+    };
 
     castCtx.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, function (e) {
       var S = cast.framework.SessionState;
@@ -776,6 +770,7 @@
     mode = 'cast';
     $('castName').textContent = 'Casting to ' + name;
     $('castScreen').classList.remove('hidden');
+    $('castBtn').classList.add('active');
     ensureStarted(); // no argument: keep the saved short/long setting
     // Rejoined after a page reload while the TV is already playing:
     // leave it alone, just show the state. Otherwise start current game.
@@ -789,6 +784,7 @@
     castResumeAt = lastCastTime;
     lastCastTime = 0;
     $('castScreen').classList.add('hidden');
+    $('castBtn').classList.remove('active');
     $('pause').textContent = '⏸';
     mode = 'bc';
     if (started && games.length) loadCurrent();
