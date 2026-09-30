@@ -79,8 +79,8 @@ queue.json. Date = yesterday in North American time.
 - Liiga recaps from YouTube @Liiga1975 after NHL games
   (root: all games, Handyy: JYP only via config liigaTeams).
 Details in DOCUMENTATION.md.
-- Chromecast native cast button (Chrome only), 2026-09-30. Details in
-  DOCUMENTATION.md.
+- Chromecast native cast button (Chrome only) + forced max quality
+  locally and on cast, 2026-09-30. Details in DOCUMENTATION.md.
 
 # context-mode — MANDATORY routing rules
 

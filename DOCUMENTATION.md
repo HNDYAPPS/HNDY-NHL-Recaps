@@ -150,7 +150,19 @@ without restarting the video. Cast needs https or localhost; `file://`
 never shows the button. Verified facts: NHL streams are clear (no DRM), CORS
 `*`, HLS with TS segments and separate audio rendition.
 Alternative with zero code: on Chromecast with Google TV install a browser
-(TV Bro) and open the profile URL directly with the remote.
+(TV Bro) and open the profile URL directly with the remote (user does this too).
+
+**Quality (added 2026-09-30):** local player forces the sharpest rendition
+(`forceMaxQuality()`: `player.qualityLevels()`, only the max-height levels
+stay enabled; Brightcove otherwise picks by player size, a 660 px window got
+360p). Cast: the TV's own ABR sat low, so `castLoad()` fetches the HLS
+master, keeps only the top-resolution variant + audio/subtitle lines
+(`maxQualityManifest()`), and sends it inline as a `data:` URL. Verified
+working on Chromecast with Google TV. Fallback chain if the TV rejects a
+source (loadMedia reject or IDLE/ERROR): 1080p data playlist → https MP4
+(720p) → plain HLS (`castCandidates`, `castTryNext()`). Renditions seen:
+270p–1080p, top is 1080p @ ~4 Mbps. Phone on mobile data: ~150 MB per
+5-minute recap.
 
 ### Scoring (config.json — used by the Handyy profile only)
 Weighted sum of: goal count, margin (1-goal and 2-goal bonuses),
@@ -278,7 +290,10 @@ The root/default profile applies none of this — see Profiles above.
 ## Session history
 
 - 2026-09-30: native Chromecast casting in player (cast mode, castM,
-  Liiga skip, resume on disconnect); spec + plan under docs/superpowers/.
+  Liiga skip, resume on disconnect); own cast button (Google's launcher
+  element stayed display:none); max quality locally (qualityLevels) and on
+  cast (1080p-only inline playlist, MP4/HLS fallback). Spec + plan under
+  docs/superpowers/. Tested OK on desktop Chrome + Chromecast with Google TV.
 - **2026-09-23/24**: Built phases 0-4 end to end, deployed to GitHub
   Pages, iterated on player UI (fonts, layout, mobile bugs) based on
   live device testing since local testing can't cover mobile. Fixed:
