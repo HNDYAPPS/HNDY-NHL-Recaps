@@ -132,6 +132,25 @@ confirmed working on GitHub Pages. Video ID = the trailing number in
   = `liigaTeams` in its config (Handyy: `["JYP"]`); root gets all.
   Liiga lives in a separate `"liiga"` key, always played after NHL.
 
+### Chromecast (added 2026-09-30)
+Native cast, not tab mirroring. Google Cast web sender SDK
+(`cast_sender.js?loadCastFramework=1`) + `<google-cast-launcher id="castBtn">`
+in the bar, hidden until `__onGCastApiAvailable(true)`, so only Chrome
+(desktop/Android) and Chromium browsers with Cast ever show it. Receiver is
+Google's Default Media Receiver: no receiver code, no developer account.
+Third playback mode `'cast'` with `castM` adapter behind `M()`; `loadCurrent()`
+branches to `castLoad()`, which reuses `player.catalog.getVideo()` and sends
+the first https HLS source (MP4 fallback) with title "AWAY @ HOME · Game i/n".
+Auto-next on `CURRENT_TIME_CHANGED` (< `END_MARGIN` left) or IDLE/FINISHED.
+Liiga (YouTube) cannot cast: next/dropdown into Liiga while casting toasts
+"Liiga not castable" and stays. Disconnect returns to local play at the TV
+position (`castResumeAt`). Page reload rejoins the session (`ORIGIN_SCOPED`)
+without restarting the video. Cast needs https or localhost; `file://`
+never shows the button. Verified facts: NHL streams are clear (no DRM), CORS
+`*`, HLS with TS segments and separate audio rendition.
+Alternative with zero code: on Chromecast with Google TV install a browser
+(TV Bro) and open the profile URL directly with the remote.
+
 ### Scoring (config.json — used by the Handyy profile only)
 Weighted sum of: goal count, margin (1-goal and 2-goal bonuses),
 overtime, shootout (negative weight — user dislikes them), lead
@@ -211,6 +230,10 @@ The root/default profile applies none of this — see Profiles above.
 
 ## Known constraints / things NOT built
 
+- Casting: TV shows Google's own overlay (title + progress bar) briefly at
+  start and on pause; cannot be hidden with the Default Media Receiver.
+  Sender tab must stay alive to chain videos. No AirPlay (no Apple device
+  to test). Custom receiver (would fix both) not built.
 - No threshold/filtering — every game with a recap goes in the queue.
 - No cross-device "last watched" sync (per-device localStorage only,
   by user's choice).
@@ -253,6 +276,8 @@ The root/default profile applies none of this — see Profiles above.
 
 ## Session history
 
+- 2026-09-30: native Chromecast casting in player (cast mode, castM,
+  Liiga skip, resume on disconnect); spec + plan under docs/superpowers/.
 - **2026-09-23/24**: Built phases 0-4 end to end, deployed to GitHub
   Pages, iterated on player UI (fonts, layout, mobile bugs) based on
   live device testing since local testing can't cover mobile. Fixed:

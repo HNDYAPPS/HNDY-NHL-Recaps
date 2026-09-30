@@ -261,6 +261,46 @@
     button { font-size: 13px; min-width: 34px; padding: 0 6px; }
     .group { gap: 4px; }
   }
+  /* Chromecast: SDK renders <google-cast-launcher> as an icon; we size
+     it like a bar button. Hidden until the SDK says Cast is available,
+     so non-Chrome browsers never see an empty box. */
+  #castBtn {
+    display: inline-block;
+    width: 66px;
+    height: 56px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    background: #1c1c1c;
+    border: 2px solid #3a3a3a;
+    border-radius: 10px;
+    cursor: pointer;
+    --disconnected-color: #eee;
+    --connected-color: #2a5;
+  }
+  #castBtn:hover { background: #333; border-color: #888; }
+  /* Shown over the video area while casting. Above ytwrap (2), below
+     the start overlay (10) and toast (5). */
+  #castScreen {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    background: #000;
+    color: #ccc;
+    font-size: 28px;
+    text-align: center;
+    padding: 0 24px;
+  }
+  #castScreen svg { width: 96px; height: 96px; fill: #2a5; }
+  @media (max-width: 640px), (max-height: 640px) {
+    #castBtn { width: 40px; height: 40px; padding: 7px 8px; }
+    #castScreen { font-size: 18px; }
+    #castScreen svg { width: 56px; height: 56px; }
+  }
 </style>
 </head>
 <body>
@@ -275,6 +315,10 @@
       playsinline>
     </video-js>
     <div id="ytwrap" class="ythide"><div id="yt"></div><div id="ytShield"></div></div>
+    <div id="castScreen" class="hidden">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+      <div id="castName">Casting</div>
+    </div>
     <div id="toast"></div>
     <div id="overlay">
       <img id="overlayLogo" src="logo_hndyapps_black.png" alt="HNDYAPPS">
@@ -312,12 +356,14 @@
       <div class="group">
         <button id="long" title="Short / long recap (L)">Long</button>
         <button id="fs" title="Fullscreen (F)">⛶</button>
+        <google-cast-launcher id="castBtn" class="hidden" title="Cast to TV"></google-cast-launcher>
       </div>
     </div>
   </div>
 </div>
 
 <script src="https://players.brightcove.net/6415718365001/EXtG1xJ7H_default/index.min.js"></script>
+<script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 <script>
 (function () {
   var STORE = 'nhlRecapQueue';
@@ -588,7 +634,26 @@
     },
     duration: function () { return ytReady ? ytPlayer.getDuration() : 0; }
   };
-  function M() { return mode === 'yt' ? ytM : bcM; }
+  // ---- Chromecast (Google Cast web sender; Chrome only) ----
+  // Third mode 'cast': the TV plays, this page is only the remote.
+  var castCtx = null;      // cast.framework.CastContext
+  var remotePlayer = null; // cast.framework.RemotePlayer (mirror of TV state)
+  var remoteCtl = null;    // cast.framework.RemotePlayerController
+  var castResumeAt = 0;    // TV position to resume locally after disconnect
+
+  var castM = {
+    play: function () { if (remotePlayer && remotePlayer.isMediaLoaded && remotePlayer.isPaused) remoteCtl.playOrPause(); },
+    pause: function () { if (remotePlayer && remotePlayer.isMediaLoaded && !remotePlayer.isPaused) remoteCtl.playOrPause(); },
+    paused: function () { return !remotePlayer || !remotePlayer.isMediaLoaded || remotePlayer.isPaused; },
+    time: function (t) {
+      if (!remotePlayer || !remotePlayer.isMediaLoaded) return 0;
+      if (t === undefined) return remotePlayer.currentTime;
+      remotePlayer.currentTime = t;
+      remoteCtl.seek();
+    },
+    duration: function () { return (remotePlayer && remotePlayer.isMediaLoaded) ? remotePlayer.duration : 0; }
+  };
+  function M() { return mode === 'cast' ? castM : mode === 'yt' ? ytM : bcM; }
 
   window.onYouTubeIframeAPIReady = function () {
     ytPlayer = new YT.Player('yt', {
@@ -636,6 +701,7 @@
   }, 250);
 
   function loadYouTube(id) {
+    castResumeAt = 0; // position belonged to an NHL video, not this one
     if (player) player.pause();
     mode = 'yt';
     $('ytwrap').classList.remove('ythide');
@@ -652,6 +718,120 @@
     $('ytwrap').classList.add('ythide');
   }
 
+  // Called by cast_sender.js once it knows whether Cast works here.
+  // Non-Chrome browsers: ok === false (or never called) → nothing happens.
+  window.__onGCastApiAvailable = function (ok) {
+    if (!ok || !window.cast || !cast.framework) return;
+    castCtx = cast.framework.CastContext.getInstance();
+    castCtx.setOptions({
+      receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+      autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+    });
+    remotePlayer = new cast.framework.RemotePlayer();
+    remoteCtl = new cast.framework.RemotePlayerController(remotePlayer);
+    $('castBtn').classList.remove('hidden');
+
+    castCtx.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, function (e) {
+      var S = cast.framework.SessionState;
+      if (e.sessionState === S.SESSION_STARTED || e.sessionState === S.SESSION_RESUMED) castConnected();
+      else if (e.sessionState === S.SESSION_ENDED) castDisconnected();
+    });
+
+    var E = cast.framework.RemotePlayerEventType;
+    remoteCtl.addEventListener(E.IS_PAUSED_CHANGED, function () {
+      if (mode !== 'cast') return;
+      $('pause').textContent = remotePlayer.isPaused ? '▶' : '⏸';
+    });
+    // Auto-next, same rule as the local players: switch just before the end.
+    remoteCtl.addEventListener(E.CURRENT_TIME_CHANGED, function () {
+      if (mode !== 'cast' || switching || !started || !remotePlayer.isMediaLoaded) return;
+      var d = remotePlayer.duration, t = remotePlayer.currentTime;
+      if (d && t && d - t < END_MARGIN) go(1);
+    });
+    // Belt and braces: TV reports FINISHED (time events are only ~1/s).
+    remoteCtl.addEventListener(E.PLAYER_STATE_CHANGED, function () {
+      if (mode !== 'cast' || switching || !started) return;
+      if (remotePlayer.playerState !== chrome.cast.media.PlayerState.IDLE) return;
+      var s = castCtx.getCurrentSession();
+      var ms = s && s.getMediaSession();
+      if (ms && ms.idleReason === chrome.cast.media.IdleReason.FINISHED) go(1);
+    });
+  };
+
+  function castConnected() {
+    var s = castCtx.getCurrentSession();
+    var name = (s && s.getCastDevice() && s.getCastDevice().friendlyName) || 'TV';
+    if (mode === 'bc' && player) player.pause();
+    if (mode === 'yt' && ytReady) ytPlayer.stopVideo();
+    ytPending = null;
+    $('ytwrap').classList.add('ythide');
+    mode = 'cast';
+    $('castName').textContent = 'Casting to ' + name;
+    $('castScreen').classList.remove('hidden');
+    ensureStarted(false);
+    // Rejoined after a page reload while the TV is already playing:
+    // leave it alone, just show the state. Otherwise start current game.
+    if (remotePlayer.isMediaLoaded) { render(); return; }
+    if (games.length) loadCurrent();
+  }
+
+  function castDisconnected() {
+    if (mode !== 'cast') return;
+    castResumeAt = (remotePlayer && remotePlayer.isMediaLoaded) ? (remotePlayer.currentTime || 0) : 0;
+    $('castScreen').classList.add('hidden');
+    $('pause').textContent = '⏸';
+    mode = 'bc';
+    if (started && games.length) loadCurrent();
+  }
+
+  // Pick a stream URL the TV can play from the Brightcove catalog entry.
+  function castSource(video) {
+    var list = (video && video.sources) || [];
+    var pick = function (test) {
+      for (var i = 0; i < list.length; i++) {
+        var s = list[i];
+        if (s.src && s.src.indexOf('https://') === 0 && test(s)) return s;
+      }
+      return null;
+    };
+    var hls = pick(function (s) { return /mpegurl/i.test(s.type || ''); });
+    if (hls) return { src: hls.src, type: 'application/x-mpegURL' };
+    var mp4 = pick(function (s) { return s.container === 'MP4' || /mp4/i.test(s.type || ''); });
+    if (mp4) return { src: mp4.src, type: mp4.type || 'video/mp4' };
+    return null;
+  }
+
+  function castLoad(g) {
+    if (!g) return;
+    if (g.youtubeId) { toast('Liiga not castable'); return; }
+    var vid = currentVideoId();
+    if (!vid) { toast('No video'); return; }
+    var session = castCtx && castCtx.getCurrentSession();
+    if (!session) return;
+    switching = true;
+    player.catalog.getVideo(vid, function (error, video) {
+      if (mode !== 'cast') return; // cast ended while fetching
+      if (error) { toast('Video load failed, skipping'); switching = false; go(1); return; }
+      var src = castSource(video);
+      if (!src) { toast('No castable stream, skipping'); switching = false; go(1); return; }
+      var info = new chrome.cast.media.MediaInfo(src.src, src.type);
+      info.streamType = chrome.cast.media.StreamType.BUFFERED;
+      info.metadata = new chrome.cast.media.GenericMediaMetadata();
+      info.metadata.title = teamsLabel(g) + ' · Game ' + (idx + 1) + '/' + games.length;
+      var req = new chrome.cast.media.LoadRequest(info);
+      req.autoplay = true;
+      session.loadMedia(req).then(
+        function () { switching = false; },
+        function (err) {
+          console.error('cast loadMedia', err);
+          switching = false;
+          toast('Cast load failed, skipping');
+          go(1);
+        }
+      );
+    });
+  }
+
   function currentVideoId() {
     var g = games[idx];
     if (!g) return null;
@@ -663,6 +843,7 @@
     var g = games[idx];
     render();
     saveState();
+    if (mode === 'cast') { castLoad(g); return; }
     if (g && g.youtubeId) { loadYouTube(g.youtubeId); return; }
     showBrightcove();
     var vid = currentVideoId();
@@ -676,6 +857,12 @@
         switching = false;
         go(1);
         return;
+      }
+      // Coming back from a cast: pick up where the TV was.
+      if (castResumeAt) {
+        var at = castResumeAt;
+        castResumeAt = 0;
+        player.one('loadedmetadata', function () { try { player.currentTime(at); } catch (e) {} });
       }
       player.catalog.load(video);
       player.play();
@@ -701,6 +888,7 @@
     var n = idx + delta;
     if (n < 0) { toast('First game'); return; }
     if (n >= games.length) { toast('All done'); M().pause(); return; }
+    if (mode === 'cast' && games[n].youtubeId) { toast('Liiga not castable — end of queue'); return; }
     idx = n;
     loadCurrent();
   }
@@ -708,6 +896,7 @@
   function jumpTo(n) {
     ensureStarted(false);
     if (n < 0 || n >= games.length) return;
+    if (mode === 'cast' && games[n].youtubeId) { toast('Liiga not castable'); render(); return; }
     idx = n;
     loadCurrent();
   }
