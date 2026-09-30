@@ -765,11 +765,20 @@
     });
     // Belt and braces: TV reports FINISHED (time events are only ~1/s).
     remoteCtl.addEventListener(E.PLAYER_STATE_CHANGED, function () {
-      if (mode !== 'cast' || switching || !started) return;
+      if (mode !== 'cast' || !started) return;
       if (remotePlayer.playerState !== chrome.cast.media.PlayerState.IDLE) return;
       var s = castCtx.getCurrentSession();
       var ms = s && s.getMediaSession();
-      if (ms && ms.idleReason === chrome.cast.media.IdleReason.FINISHED) go(1);
+      if (!ms) return;
+      // TV accepted a source but could not play it (e.g. the inline
+      // 1080p playlist): fall through to the next candidate.
+      if (ms.idleReason === chrome.cast.media.IdleReason.ERROR && castCandidates.length) {
+        switching = true;
+        castTryNext();
+        return;
+      }
+      if (switching) return;
+      if (ms.idleReason === chrome.cast.media.IdleReason.FINISHED) go(1);
     });
   };
 
@@ -803,8 +812,9 @@
     if (started && games.length) loadCurrent();
   }
 
-  // Pick a stream URL the TV can play from the Brightcove catalog entry.
-  function castSource(video) {
+  // Pick the https HLS master and the https MP4 from the Brightcove
+  // catalog entry. Either may be null.
+  function castSources(video) {
     var list = (video && video.sources) || [];
     var pick = function (test) {
       for (var i = 0; i < list.length; i++) {
@@ -814,10 +824,79 @@
       return null;
     };
     var hls = pick(function (s) { return /mpegurl/i.test(s.type || ''); });
-    if (hls) return { src: hls.src, type: 'application/x-mpegURL' };
     var mp4 = pick(function (s) { return s.container === 'MP4' || /mp4/i.test(s.type || ''); });
-    if (mp4) return { src: mp4.src, type: mp4.type || 'video/mp4' };
-    return null;
+    return {
+      hls: hls ? { src: hls.src, type: 'application/x-mpegURL' } : null,
+      mp4: mp4 ? { src: mp4.src, type: mp4.type || 'video/mp4' } : null
+    };
+  }
+
+  // The TV picks its own quality and tends to sit low. Build a copy of
+  // the master playlist that only lists the sharpest rendition and hand
+  // it over inline (data: URL), so the TV has nothing lower to choose.
+  // Resolves to the data: URL, or null when anything goes wrong.
+  function maxQualityManifest(masterUrl) {
+    return fetch(masterUrl).then(function (r) { return r.text(); }).then(function (txt) {
+      var lines = txt.split(/\r?\n/);
+      var abs = function (u) { try { return new URL(u, masterUrl).href; } catch (e) { return u; } };
+      var maxH = 0;
+      lines.forEach(function (l) {
+        var m = /^#EXT-X-STREAM-INF:.*RESOLUTION=\d+x(\d+)/.exec(l);
+        if (m) maxH = Math.max(maxH, Number(m[1]));
+      });
+      if (!maxH) return null;
+      var out = [];
+      for (var i = 0; i < lines.length; i++) {
+        var l = lines[i];
+        if (/^#EXT-X-STREAM-INF/.test(l)) {
+          var m2 = /RESOLUTION=\d+x(\d+)/.exec(l);
+          var uri = lines[i + 1] || '';
+          i++;
+          if (m2 && Number(m2[1]) === maxH) { out.push(l); out.push(abs(uri)); }
+        } else if (/^#EXT-X-I-FRAME-STREAM-INF/.test(l)) {
+          continue; // trick-play thumbnails, not needed
+        } else if (/^#EXT-X-MEDIA/.test(l)) {
+          out.push(l.replace(/URI="([^"]+)"/, function (_, u) { return 'URI="' + abs(u) + '"'; }));
+        } else if (l.trim()) {
+          out.push(l);
+        }
+      }
+      return 'data:application/x-mpegURL;base64,' + btoa(unescape(encodeURIComponent(out.join('\n') + '\n')));
+    }).catch(function () { return null; });
+  }
+
+  // Candidates for the current game, tried in order until one plays:
+  // 1080p-only playlist → plain MP4 (720p, always works) → plain HLS.
+  var castCandidates = [];
+  var castCur = null; // { session, seq } of the load in progress
+
+  function castTryNext() {
+    var c = castCur;
+    if (!c || mode !== 'cast' || c.seq !== castSeq) return;
+    var cand = castCandidates.shift();
+    if (!cand) { switching = false; toast('Cast load failed, skipping'); go(1); return; }
+    var g = games[idx];
+    var info = new chrome.cast.media.MediaInfo(cand.src, cand.type);
+    info.streamType = chrome.cast.media.StreamType.BUFFERED;
+    info.metadata = new chrome.cast.media.GenericMediaMetadata();
+    info.metadata.title = teamsLabel(g) + ' · Game ' + (idx + 1) + '/' + games.length;
+    var req = new chrome.cast.media.LoadRequest(info);
+    req.autoplay = true;
+    c.session.loadMedia(req).then(
+      function () {
+        if (c.seq !== castSeq) return;
+        lastCastTime = 0;
+        $('pause').textContent = remotePlayer.isPaused ? '▶' : '⏸';
+        // Hold the guard a moment: RemotePlayer may still report the
+        // previous video's time/duration right after the load resolves.
+        setTimeout(function () { if (c.seq === castSeq) switching = false; }, 1500);
+      },
+      function (err) {
+        if (c.seq !== castSeq) return; // cancelled by a newer load: not an error
+        console.warn('cast loadMedia rejected, trying next source', err);
+        castTryNext();
+      }
+    );
   }
 
   function castLoad(g) {
@@ -837,31 +916,18 @@
     player.catalog.getVideo(vid, function (error, video) {
       if (mode !== 'cast' || seq !== castSeq) return; // cast ended, or a newer load superseded this one
       if (error) { toast('Video load failed, skipping'); switching = false; go(1); return; }
-      var src = castSource(video);
-      if (!src) { toast('No castable stream, skipping'); switching = false; go(1); return; }
-      var info = new chrome.cast.media.MediaInfo(src.src, src.type);
-      info.streamType = chrome.cast.media.StreamType.BUFFERED;
-      info.metadata = new chrome.cast.media.GenericMediaMetadata();
-      info.metadata.title = teamsLabel(g) + ' · Game ' + (idx + 1) + '/' + games.length;
-      var req = new chrome.cast.media.LoadRequest(info);
-      req.autoplay = true;
-      session.loadMedia(req).then(
-        function () {
-          if (seq !== castSeq) return;
-          lastCastTime = 0;
-          $('pause').textContent = remotePlayer.isPaused ? '▶' : '⏸';
-          // Hold the guard a moment: RemotePlayer may still report the
-          // previous video's time/duration right after the load resolves.
-          setTimeout(function () { if (seq === castSeq) switching = false; }, 1500);
-        },
-        function (err) {
-          if (seq !== castSeq) return; // cancelled by a newer load: not an error
-          console.error('cast loadMedia', err);
-          switching = false;
-          toast('Cast load failed, skipping');
-          go(1);
-        }
-      );
+      var srcs = castSources(video);
+      if (!srcs.hls && !srcs.mp4) { toast('No castable stream, skipping'); switching = false; go(1); return; }
+      var ready = srcs.hls ? maxQualityManifest(srcs.hls.src) : Promise.resolve(null);
+      ready.then(function (dataUrl) {
+        if (mode !== 'cast' || seq !== castSeq) return;
+        castCandidates = [];
+        if (dataUrl) castCandidates.push({ src: dataUrl, type: 'application/x-mpegURL' });
+        if (srcs.mp4) castCandidates.push(srcs.mp4);
+        if (srcs.hls) castCandidates.push(srcs.hls);
+        castCur = { session: session, seq: seq };
+        castTryNext();
+      });
     });
   }
 
