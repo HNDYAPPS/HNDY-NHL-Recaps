@@ -593,6 +593,19 @@
     force(player.tech_ && player.tech_.el_);
   }
 
+  // Always play the sharpest rendition. Brightcove's player otherwise
+  // picks by player size (a 660 px window gets 360p) and by bandwidth.
+  function forceMaxQuality() {
+    if (!player || typeof player.qualityLevels !== 'function') return;
+    try {
+      var levels = player.qualityLevels();
+      var max = 0;
+      for (var i = 0; i < levels.length; i++) max = Math.max(max, levels[i].height || 0);
+      if (!max) return;
+      for (var j = 0; j < levels.length; j++) levels[j].enabled = (levels[j].height === max);
+    } catch (e) {}
+  }
+
   // ---- Two players: Brightcove (NHL) and YouTube (Liiga) ----
   // Controls talk to M(), which is whichever one is showing now.
   var mode = 'bc';
@@ -1002,6 +1015,11 @@
     });
     player.on('ended', function () { if (!switching && started && mode === 'bc') go(1); });
     player.on('loadedmetadata', fixPlayerSize);
+    // Levels arrive while the manifest parses; re-apply once playing too
+    // in case a level was added after loadedmetadata.
+    player.on('loadedmetadata', forceMaxQuality);
+    player.on('playing', forceMaxQuality);
+    try { player.qualityLevels().on('addqualitylevel', forceMaxQuality); } catch (e) {}
     player.on('play', function () { $('pause').textContent = '⏸'; scheduleHide(); fixPlayerSize(); });
     player.on('pause', function () {
       if (mode !== 'bc') return;
