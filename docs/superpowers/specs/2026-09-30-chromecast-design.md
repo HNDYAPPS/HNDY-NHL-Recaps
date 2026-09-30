@@ -42,8 +42,8 @@ folder (single `index.html`, copied as today).
    with type `application/x-mpegURL`; fallback first `https` MP4;
    none → toast "No castable stream, skipping", `go(1)`. Build
    `MediaInfo(url, type)` with `GenericMediaMetadata.title =
-   "{AWAY} @ {HOME} · Game i/n"` (team part omitted when the existing
-   hide-team-names setting is on). `LoadRequest.autoplay = true`,
+   "{AWAY} @ {HOME} · Game i/n"` (always with teams; there is no
+   hide-team-names setting and none is wanted). `LoadRequest.autoplay = true`,
    `session.loadMedia`. Failure → toast, `go(1)`.
 3. **Auto-next**: `CURRENT_TIME_CHANGED` event; when
    `duration - currentTime < END_MARGIN` and not `switching` → `go(1)`.

@@ -640,6 +640,8 @@
   var remotePlayer = null; // cast.framework.RemotePlayer (mirror of TV state)
   var remoteCtl = null;    // cast.framework.RemotePlayerController
   var castResumeAt = 0;    // TV position to resume locally after disconnect
+  var lastCastTime = 0;    // last time the TV reported (RemotePlayer is reset before SESSION_ENDED reaches us)
+  var castSeq = 0;         // ignore results of a superseded castLoad (fast next/prev)
 
   var castM = {
     play: function () { if (remotePlayer && remotePlayer.isMediaLoaded && remotePlayer.isPaused) remoteCtl.playOrPause(); },
@@ -729,7 +731,12 @@
     });
     remotePlayer = new cast.framework.RemotePlayer();
     remoteCtl = new cast.framework.RemotePlayerController(remotePlayer);
-    $('castBtn').classList.remove('hidden');
+    // Show the button only when there is a Chromecast on the network.
+    var showBtn = function (st) {
+      $('castBtn').classList.toggle('hidden', st === cast.framework.CastState.NO_DEVICES_AVAILABLE);
+    };
+    showBtn(castCtx.getCastState());
+    castCtx.addEventListener(cast.framework.CastContextEventType.CAST_STATE_CHANGED, function (e) { showBtn(e.castState); });
 
     castCtx.addEventListener(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, function (e) {
       var S = cast.framework.SessionState;
@@ -746,6 +753,7 @@
     remoteCtl.addEventListener(E.CURRENT_TIME_CHANGED, function () {
       if (mode !== 'cast' || switching || !started || !remotePlayer.isMediaLoaded) return;
       var d = remotePlayer.duration, t = remotePlayer.currentTime;
+      if (t) lastCastTime = t;
       if (d && t && d - t < END_MARGIN) go(1);
     });
     // Belt and braces: TV reports FINISHED (time events are only ~1/s).
@@ -768,16 +776,18 @@
     mode = 'cast';
     $('castName').textContent = 'Casting to ' + name;
     $('castScreen').classList.remove('hidden');
-    ensureStarted(false);
+    ensureStarted(); // no argument: keep the saved short/long setting
     // Rejoined after a page reload while the TV is already playing:
     // leave it alone, just show the state. Otherwise start current game.
-    if (remotePlayer.isMediaLoaded) { render(); return; }
+    var hasMedia = remotePlayer.isMediaLoaded || !!(s && s.getMediaSession());
+    if (hasMedia) { render(); return; }
     if (games.length) loadCurrent();
   }
 
   function castDisconnected() {
     if (mode !== 'cast') return;
-    castResumeAt = (remotePlayer && remotePlayer.isMediaLoaded) ? (remotePlayer.currentTime || 0) : 0;
+    castResumeAt = lastCastTime;
+    lastCastTime = 0;
     $('castScreen').classList.add('hidden');
     $('pause').textContent = '⏸';
     mode = 'bc';
@@ -802,15 +812,21 @@
   }
 
   function castLoad(g) {
-    if (!g) return;
-    if (g.youtubeId) { toast('Liiga not castable'); return; }
-    var vid = currentVideoId();
-    if (!vid) { toast('No video'); return; }
+    if (!g || !player) return; // player null = Brightcove not ready yet; wire() retries
     var session = castCtx && castCtx.getCurrentSession();
     if (!session) return;
+    if (g.youtubeId) {
+      // Stop whatever the TV is playing so the old game does not run on.
+      try { if (remotePlayer.isMediaLoaded) remoteCtl.stop(); } catch (e) {}
+      toast('Liiga not castable');
+      return;
+    }
+    var vid = currentVideoId();
+    if (!vid) { toast('No video'); return; }
+    var seq = ++castSeq;
     switching = true;
     player.catalog.getVideo(vid, function (error, video) {
-      if (mode !== 'cast') return; // cast ended while fetching
+      if (mode !== 'cast' || seq !== castSeq) return; // cast ended, or a newer load superseded this one
       if (error) { toast('Video load failed, skipping'); switching = false; go(1); return; }
       var src = castSource(video);
       if (!src) { toast('No castable stream, skipping'); switching = false; go(1); return; }
@@ -821,8 +837,16 @@
       var req = new chrome.cast.media.LoadRequest(info);
       req.autoplay = true;
       session.loadMedia(req).then(
-        function () { switching = false; },
+        function () {
+          if (seq !== castSeq) return;
+          lastCastTime = 0;
+          $('pause').textContent = remotePlayer.isPaused ? '▶' : '⏸';
+          // Hold the guard a moment: RemotePlayer may still report the
+          // previous video's time/duration right after the load resolves.
+          setTimeout(function () { if (seq === castSeq) switching = false; }, 1500);
+        },
         function (err) {
+          if (seq !== castSeq) return; // cancelled by a newer load: not an error
           console.error('cast loadMedia', err);
           switching = false;
           toast('Cast load failed, skipping');
@@ -1007,6 +1031,9 @@
       videojs.getPlayer('player').ready(function () {
         player = this;
         wire();
+        // Rejoined a cast session (page reload) before Brightcove was
+        // ready and the TV is idle: start the current game now.
+        if (mode === 'cast' && remotePlayer && !remotePlayer.isMediaLoaded && games.length) loadCurrent();
       });
     })
     .catch(function (e) {
