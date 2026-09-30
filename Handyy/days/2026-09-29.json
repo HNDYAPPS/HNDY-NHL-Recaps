@@ -28,6 +28,14 @@
     },
     {
       "rank": 4,
+      "gameId": 2026020005,
+      "home": "VGK",
+      "away": "CHI",
+      "shortVideoId": "6405943511112",
+      "longVideoId": "6405943904112"
+    },
+    {
+      "rank": 5,
       "gameId": 2026020003,
       "home": "BOS",
       "away": "NYR",

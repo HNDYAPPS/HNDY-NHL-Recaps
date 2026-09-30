@@ -33,6 +33,14 @@
       "away": "VAN",
       "shortVideoId": "6405940449112",
       "longVideoId": "6405941321112"
+    },
+    {
+      "rank": 5,
+      "gameId": 2026020005,
+      "home": "VGK",
+      "away": "CHI",
+      "shortVideoId": "6405943511112",
+      "longVideoId": "6405943904112"
     }
   ]
 }
