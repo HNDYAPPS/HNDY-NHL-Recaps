@@ -26,5 +26,22 @@
       "shortVideoId": "6406000814112",
       "longVideoId": "6406002366112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "WhEt6SdRxaI",
+      "home": "K-Espoo",
+      "away": "TPS"
+    },
+    {
+      "youtubeId": "G88Ijc5BCTs",
+      "home": "Kärpät",
+      "away": "SaiPa"
+    },
+    {
+      "youtubeId": "wkx1eyt8mRQ",
+      "home": "Tappara",
+      "away": "KooKoo"
+    }
   ]
 }
