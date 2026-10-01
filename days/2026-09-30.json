@@ -17,6 +17,14 @@
       "away": "NYI",
       "shortVideoId": "6405996619112",
       "longVideoId": "6405994685112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020007,
+      "home": "COL",
+      "away": "LAK",
+      "shortVideoId": "6406000814112",
+      "longVideoId": "6406002366112"
     }
   ]
 }
