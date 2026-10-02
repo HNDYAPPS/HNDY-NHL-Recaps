@@ -75,7 +75,7 @@ profile, not just the original one.
 
 ### Data flow
 ```
-GitHub Actions (cron, every 10 min, 04:00-11:00 UTC)
+GitHub Actions (cron, every 10 min, 03:00-11:50 UTC; runs before 06:00 Helsinki skipped)
   → fetch.py: hits api-web.nhle.com/v1/score/{date} (live, no cache)
   → score.py: for each finished game, fetches gamecenter landing JSON
               (cached per game — stable once game is FINAL) and player
@@ -256,9 +256,9 @@ The root/default profile applies none of this — see Profiles above.
 - GitHub Pages is public (free-tier private repos can't publish
   Pages) — repo was made public for this reason, confirmed nothing
   sensitive in it.
-- DST is not handled precisely — cron window (04:00-11:00 UTC, every
-  10 min) is a fixed compromise covering both Finnish winter and
-  summer time reasonably, not exact.
+- DST handled: cron 03:00-11:50 UTC every 10 min; first step checks
+  Helsinki time and skips scheduled runs before 06:00 (winter only).
+  Manual dispatch always runs. First real run = 06:00 Finnish, all year.
 - Day arrows are text, not focusable — no TV-remote navigation.
 - Liiga recaps older than the feed's ~15 newest can't be backfilled.
 - A pause every ~1 s on the user's PC turned out to be a Bluetooth
@@ -316,6 +316,7 @@ The root/default profile applies none of this — see Profiles above.
   day arrows; "NO GAMES TODAY" on empty days; Liiga recaps via YouTube
   after NHL (all on root, JYP only on Handyy), subtitles off; workflow
   actions bumped to checkout@v5 / setup-python@v6 (Node 24 warning); HNDYAPPS site icons.
+- 2026-10-02: workflow first run 06:00 Finnish all year (cron 03 UTC + Helsinki time-check step).
 
 ## Picking this up next session
 

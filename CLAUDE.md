@@ -12,7 +12,7 @@ Two-part tool:
 2. Static HTML player: plays queued recaps back-to-back with no spoilers.
 
 Stack: Python 3.11+ (requests), vanilla HTML/JS player, no build tools.
-Hosting: GitHub Pages + GitHub Actions cron (~08:00 UTC).
+Hosting: GitHub Pages + GitHub Actions cron (from 06:00 Finnish, DST-aware).
 
 ## Phase 0 – Brightcove embed test (DO FIRST, do not proceed until it works)
 
