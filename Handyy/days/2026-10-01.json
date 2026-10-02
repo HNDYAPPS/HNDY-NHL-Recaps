@@ -24,7 +24,7 @@
       "home": "CGY",
       "away": "SEA",
       "shortVideoId": "6406088202112",
-      "longVideoId": null
+      "longVideoId": "6406087602112"
     },
     {
       "rank": 4,
@@ -41,6 +41,14 @@
       "away": "MIN",
       "shortVideoId": "6406083056112",
       "longVideoId": "6406084116112"
+    },
+    {
+      "rank": 6,
+      "gameId": 2026020013,
+      "home": "UTA",
+      "away": "CHI",
+      "shortVideoId": "6406089859112",
+      "longVideoId": "6406090347112"
     }
   ]
 }
