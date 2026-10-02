@@ -2,11 +2,13 @@ name: Daily recap queue
 
 on:
   schedule:
-    # Every 10 min, 04:00-11:00 UTC. Covers roughly 06:00-13:00 Finnish
-    # time (both DST and winter), so recap videos that appear late
+    # Every 10 min, 03:00-11:50 UTC, so recap videos that appear late
     # (West coast games especially) get picked up on a later run and
     # show up if you check the page again after your first watch.
-    - cron: "*/10 4-11 * * *"
+    # Cron is UTC only: 03:00 UTC is 06:00 Finnish summer time but
+    # 05:00 winter time, so the time-check step below skips anything
+    # before 06:00 Helsinki time. First real run = 06:00 all year.
+    - cron: "*/10 3-11 * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -16,18 +18,38 @@ jobs:
   update-queue:
     runs-on: ubuntu-latest
     steps:
+      # Scheduled runs before 06:00 Helsinki time (winter only) stop
+      # here. Manual "Run workflow" always goes ahead.
+      - name: Check Finnish time
+        id: time
+        run: |
+          hour=$(TZ=Europe/Helsinki date +%H)
+          echo "Helsinki time: $(TZ=Europe/Helsinki date +%H:%M)"
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$hour" -lt 6 ]; then
+            echo "Before 06:00 Finnish time, skipping."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v5
+        if: steps.time.outputs.go == 'true'
 
       - uses: actions/setup-python@v6
+        if: steps.time.outputs.go == 'true'
         with:
           python-version: "3.11"
 
       - run: pip install -r requirements.txt
+        if: steps.time.outputs.go == 'true'
 
       - run: python fetch.py
+        if: steps.time.outputs.go == 'true'
       - run: python score.py
+        if: steps.time.outputs.go == 'true'
 
       - name: Commit changed files if any
+        if: steps.time.outputs.go == 'true'
         run: |
           git config user.name "nhl-kooste-bot"
           git config user.email "actions@users.noreply.github.com"
