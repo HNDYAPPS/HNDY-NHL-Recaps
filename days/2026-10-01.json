@@ -49,6 +49,14 @@
       "away": "CHI",
       "shortVideoId": "6406089859112",
       "longVideoId": "6406090347112"
+    },
+    {
+      "rank": 7,
+      "gameId": 2026020015,
+      "home": "VAN",
+      "away": "EDM",
+      "shortVideoId": "6406092490112",
+      "longVideoId": "6406092682112"
     }
   ]
 }
