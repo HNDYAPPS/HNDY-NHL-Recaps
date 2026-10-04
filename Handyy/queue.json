@@ -24,7 +24,7 @@
       "home": "SJS",
       "away": "LAK",
       "shortVideoId": "6406199471112",
-      "longVideoId": null
+      "longVideoId": "6406199280112"
     },
     {
       "rank": 4,
@@ -47,8 +47,8 @@
       "gameId": 2026020033,
       "home": "VAN",
       "away": "CGY",
-      "shortVideoId": "6406199684112",
-      "longVideoId": null
+      "shortVideoId": "6406198701112",
+      "longVideoId": "6406200068112"
     },
     {
       "rank": 7,
@@ -105,6 +105,13 @@
       "away": "UTA",
       "shortVideoId": "6406191636112",
       "longVideoId": "6406194368112"
+    }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "LQrjpcOyXd8",
+      "home": "TPS",
+      "away": "JYP"
     }
   ]
 }

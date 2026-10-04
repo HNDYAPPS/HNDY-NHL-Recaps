@@ -95,8 +95,8 @@
       "gameId": 2026020033,
       "home": "VAN",
       "away": "CGY",
-      "shortVideoId": "6406199684112",
-      "longVideoId": null
+      "shortVideoId": "6406198701112",
+      "longVideoId": "6406200068112"
     },
     {
       "rank": 13,
@@ -104,7 +104,49 @@
       "home": "SJS",
       "away": "LAK",
       "shortVideoId": "6406199471112",
-      "longVideoId": null
+      "longVideoId": "6406199280112"
+    }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "GGlLJejxrFM",
+      "home": "Jukurit",
+      "away": "KalPa"
+    },
+    {
+      "youtubeId": "uT5n20eWsLM",
+      "home": "Lukko",
+      "away": "Ässät"
+    },
+    {
+      "youtubeId": "N4KziQNLByM",
+      "home": "SaiPa",
+      "away": "Jokerit"
+    },
+    {
+      "youtubeId": "Dm1jHiAXyXM",
+      "home": "Sport",
+      "away": "HIFK"
+    },
+    {
+      "youtubeId": "9Loq6LgJYQU",
+      "home": "Ilves",
+      "away": "K-Espoo"
+    },
+    {
+      "youtubeId": "LQrjpcOyXd8",
+      "home": "TPS",
+      "away": "JYP"
+    },
+    {
+      "youtubeId": "IXhdoGabEak",
+      "home": "KooKoo",
+      "away": "Pelicans"
+    },
+    {
+      "youtubeId": "XjnkrnlGCsg",
+      "home": "HPK",
+      "away": "Kärpät"
     }
   ]
 }
