@@ -65,6 +65,14 @@
       "away": "VGK",
       "shortVideoId": "6406397335112",
       "longVideoId": "6406397607112"
+    },
+    {
+      "rank": 9,
+      "gameId": 2026020052,
+      "home": "LAK",
+      "away": "FLA",
+      "shortVideoId": "6406397426112",
+      "longVideoId": "6406397050112"
     }
   ]
 }
