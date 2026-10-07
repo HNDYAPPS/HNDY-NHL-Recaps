@@ -57,6 +57,14 @@
       "away": "STL",
       "shortVideoId": "6406393792112",
       "longVideoId": "6406392305112"
+    },
+    {
+      "rank": 8,
+      "gameId": 2026020051,
+      "home": "SEA",
+      "away": "VGK",
+      "shortVideoId": "6406397335112",
+      "longVideoId": "6406397607112"
     }
   ]
 }
