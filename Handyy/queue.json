@@ -4,6 +4,14 @@
   "games": [
     {
       "rank": 1,
+      "gameId": 2026020055,
+      "home": "ANA",
+      "away": "EDM",
+      "shortVideoId": "6406456779112",
+      "longVideoId": "6406455519112"
+    },
+    {
+      "rank": 2,
       "gameId": 2026020053,
       "home": "WSH",
       "away": "PIT",
@@ -11,7 +19,7 @@
       "longVideoId": "6406448569112"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "gameId": 2026020054,
       "home": "WPG",
       "away": "COL",

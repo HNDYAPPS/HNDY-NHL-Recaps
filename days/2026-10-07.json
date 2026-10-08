@@ -17,6 +17,14 @@
       "away": "COL",
       "shortVideoId": "6406448857112",
       "longVideoId": "6406452129112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020055,
+      "home": "ANA",
+      "away": "EDM",
+      "shortVideoId": "6406456779112",
+      "longVideoId": "6406455519112"
     }
   ]
 }
