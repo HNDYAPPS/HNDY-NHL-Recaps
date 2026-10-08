@@ -1,78 +1,22 @@
 {
-  "date": "2026-10-06",
-  "totalGames": 9,
+  "date": "2026-10-07",
+  "totalGames": 3,
   "games": [
     {
       "rank": 1,
-      "gameId": 2026020045,
-      "home": "MTL",
-      "away": "CAR",
-      "shortVideoId": "6406389694112",
-      "longVideoId": "6406392435112"
+      "gameId": 2026020053,
+      "home": "WSH",
+      "away": "PIT",
+      "shortVideoId": "6406449956112",
+      "longVideoId": "6406448569112"
     },
     {
       "rank": 2,
-      "gameId": 2026020044,
-      "home": "TOR",
-      "away": "NSH",
-      "shortVideoId": "6406392025112",
-      "longVideoId": "6406392129112"
-    },
-    {
-      "rank": 3,
-      "gameId": 2026020046,
-      "home": "DET",
-      "away": "OTT",
-      "shortVideoId": "6406389163112",
-      "longVideoId": "6406391348112"
-    },
-    {
-      "rank": 4,
-      "gameId": 2026020051,
-      "home": "SEA",
-      "away": "VGK",
-      "shortVideoId": "6406397335112",
-      "longVideoId": "6406397607112"
-    },
-    {
-      "rank": 5,
-      "gameId": 2026020049,
-      "home": "BUF",
-      "away": "MIN",
-      "shortVideoId": "6406388988112",
-      "longVideoId": "6406391259112"
-    },
-    {
-      "rank": 6,
-      "gameId": 2026020048,
-      "home": "NYR",
-      "away": "NYI",
-      "shortVideoId": "6406392347112",
-      "longVideoId": "6406391583112"
-    },
-    {
-      "rank": 7,
-      "gameId": 2026020052,
-      "home": "LAK",
-      "away": "FLA",
-      "shortVideoId": "6406397426112",
-      "longVideoId": "6406397050112"
-    },
-    {
-      "rank": 8,
-      "gameId": 2026020047,
-      "home": "NJD",
-      "away": "UTA",
-      "shortVideoId": "6406391750112",
-      "longVideoId": "6406391187112"
-    },
-    {
-      "rank": 9,
-      "gameId": 2026020050,
-      "home": "CHI",
-      "away": "STL",
-      "shortVideoId": "6406393792112",
-      "longVideoId": "6406392305112"
+      "gameId": 2026020054,
+      "home": "WPG",
+      "away": "COL",
+      "shortVideoId": "6406448857112",
+      "longVideoId": "6406452129112"
     }
   ]
 }
