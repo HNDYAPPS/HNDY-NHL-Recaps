@@ -26,5 +26,22 @@
       "shortVideoId": "6406456779112",
       "longVideoId": "6406455519112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "vraFH3_29Qs",
+      "home": "Jukurit",
+      "away": "Ässät"
+    },
+    {
+      "youtubeId": "415tN2InDr8",
+      "home": "Sport",
+      "away": "Ilves"
+    },
+    {
+      "youtubeId": "p3MtRjngNLE",
+      "home": "Kärpät",
+      "away": "K-Espoo"
+    }
   ]
 }
