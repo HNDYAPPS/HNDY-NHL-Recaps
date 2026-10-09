@@ -44,6 +44,14 @@
     },
     {
       "rank": 6,
+      "gameId": 2026020065,
+      "home": "VGK",
+      "away": "TOR",
+      "shortVideoId": "6406520016112",
+      "longVideoId": "6406519932112"
+    },
+    {
+      "rank": 7,
       "gameId": 2026020058,
       "home": "MTL",
       "away": "NSH",
@@ -51,7 +59,7 @@
       "longVideoId": "6406510468112"
     },
     {
-      "rank": 7,
+      "rank": 8,
       "gameId": 2026020062,
       "home": "NYI",
       "away": "CHI",
@@ -59,7 +67,7 @@
       "longVideoId": "6406512456112"
     },
     {
-      "rank": 8,
+      "rank": 9,
       "gameId": 2026020056,
       "home": "BOS",
       "away": "UTA",
@@ -67,7 +75,7 @@
       "longVideoId": "6406512099112"
     },
     {
-      "rank": 9,
+      "rank": 10,
       "gameId": 2026020060,
       "home": "TBL",
       "away": "MIN",
