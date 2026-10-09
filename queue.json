@@ -1,7 +1,80 @@
 {
   "date": "2026-10-08",
-  "totalGames": 0,
-  "games": [],
+  "totalGames": 10,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020056,
+      "home": "BOS",
+      "away": "UTA",
+      "shortVideoId": "6406512182112",
+      "longVideoId": "6406512099112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020057,
+      "home": "BUF",
+      "away": "DAL",
+      "shortVideoId": "6406511726112",
+      "longVideoId": "6406511641112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020058,
+      "home": "MTL",
+      "away": "NSH",
+      "shortVideoId": "6406511542112",
+      "longVideoId": "6406510468112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020059,
+      "home": "OTT",
+      "away": "PHI",
+      "shortVideoId": "6406510183112",
+      "longVideoId": "6406510966112"
+    },
+    {
+      "rank": 5,
+      "gameId": 2026020060,
+      "home": "TBL",
+      "away": "MIN",
+      "shortVideoId": "6406510953112",
+      "longVideoId": "6406510867112"
+    },
+    {
+      "rank": 6,
+      "gameId": 2026020061,
+      "home": "CAR",
+      "away": "VAN",
+      "shortVideoId": "6406509252112",
+      "longVideoId": "6406511320112"
+    },
+    {
+      "rank": 7,
+      "gameId": 2026020062,
+      "home": "NYI",
+      "away": "CHI",
+      "shortVideoId": "6406511957112",
+      "longVideoId": "6406512456112"
+    },
+    {
+      "rank": 8,
+      "gameId": 2026020063,
+      "home": "STL",
+      "away": "SJS",
+      "shortVideoId": "6406513091112",
+      "longVideoId": "6406514343112"
+    },
+    {
+      "rank": 9,
+      "gameId": 2026020064,
+      "home": "CGY",
+      "away": "COL",
+      "shortVideoId": "6406516693112",
+      "longVideoId": null
+    }
+  ],
   "liiga": [
     {
       "youtubeId": "Y9MAkK9XkV8",
