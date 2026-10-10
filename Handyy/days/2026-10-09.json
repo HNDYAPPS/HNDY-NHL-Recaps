@@ -34,5 +34,12 @@
       "shortVideoId": "6406572834112",
       "longVideoId": "6406573223112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "BBDIzM3qMls",
+      "home": "Kiekko-Espoo",
+      "away": "JYP"
+    }
   ]
 }
