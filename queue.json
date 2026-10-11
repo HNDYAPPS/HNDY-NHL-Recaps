@@ -97,6 +97,22 @@
       "away": "TBL",
       "shortVideoId": "6406629528112",
       "longVideoId": "6406629629112"
+    },
+    {
+      "rank": 13,
+      "gameId": 2026020082,
+      "home": "CGY",
+      "away": "ANA",
+      "shortVideoId": "6406632971112",
+      "longVideoId": "6406634663112"
+    },
+    {
+      "rank": 14,
+      "gameId": 2026020083,
+      "home": "VGK",
+      "away": "LAK",
+      "shortVideoId": "6406634070112",
+      "longVideoId": "6406632890112"
     }
   ]
 }
