@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-11",
+  "totalGames": 3,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020084,
+      "home": "WSH",
+      "away": "SEA",
+      "shortVideoId": "6406661867112",
+      "longVideoId": "6406663024112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020085,
+      "home": "NYR",
+      "away": "VAN",
+      "shortVideoId": "6406663253112",
+      "longVideoId": "6406663067112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020086,
+      "home": "PHI",
+      "away": "CAR",
+      "shortVideoId": "6406665550112",
+      "longVideoId": "6406664286112"
+    }
+  ]
+}
