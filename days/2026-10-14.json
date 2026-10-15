@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-14",
+  "totalGames": 2,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020106,
+      "home": "WSH",
+      "away": "MTL",
+      "shortVideoId": "6406882206112",
+      "longVideoId": "6406882916112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020107,
+      "home": "COL",
+      "away": "DAL",
+      "shortVideoId": "6406886166112",
+      "longVideoId": "6406884296112"
+    }
+  ]
+}
