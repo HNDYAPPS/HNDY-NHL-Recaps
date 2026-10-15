@@ -18,5 +18,22 @@
       "shortVideoId": "6406886166112",
       "longVideoId": "6406884296112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "16N3z80oucg",
+      "home": "KalPa",
+      "away": "Ässät"
+    },
+    {
+      "youtubeId": "K4Yqs6T_qbo",
+      "home": "JYP",
+      "away": "Lukko"
+    },
+    {
+      "youtubeId": "frJcV8uI3bc",
+      "home": "HIFK",
+      "away": "TPS"
+    }
   ]
 }
