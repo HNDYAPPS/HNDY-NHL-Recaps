@@ -90,5 +90,17 @@
       "shortVideoId": "6406946690112",
       "longVideoId": "6406947966112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "cNMHgQNOmAY",
+      "home": "Sport",
+      "away": "KooKoo"
+    },
+    {
+      "youtubeId": "wNRFwdPvok0",
+      "home": "SaiPa",
+      "away": "HPK"
+    }
   ]
 }
