@@ -9,6 +9,14 @@
       "away": "PIT",
       "shortVideoId": "6406996389112",
       "longVideoId": "6406996285112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020120,
+      "home": "ANA",
+      "away": "BOS",
+      "shortVideoId": "6406997905112",
+      "longVideoId": "6406999460112"
     }
   ]
 }
