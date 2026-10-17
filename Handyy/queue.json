@@ -1,94 +1,14 @@
 {
-  "date": "2026-10-15",
-  "totalGames": 11,
+  "date": "2026-10-16",
+  "totalGames": 2,
   "games": [
     {
       "rank": 1,
-      "gameId": 2026020108,
-      "home": "TOR",
-      "away": "BUF",
-      "shortVideoId": "6406941528112",
-      "longVideoId": "6406943593112"
-    },
-    {
-      "rank": 2,
-      "gameId": 2026020112,
-      "home": "FLA",
-      "away": "VAN",
-      "shortVideoId": "6406942002112",
-      "longVideoId": "6406942201112"
-    },
-    {
-      "rank": 3,
-      "gameId": 2026020116,
-      "home": "MIN",
-      "away": "STL",
-      "shortVideoId": "6406945208112",
-      "longVideoId": "6406944046112"
-    },
-    {
-      "rank": 4,
-      "gameId": 2026020114,
-      "home": "CHI",
-      "away": "WPG",
-      "shortVideoId": "6406944230112",
-      "longVideoId": "6406943066112"
-    },
-    {
-      "rank": 5,
-      "gameId": 2026020111,
-      "home": "TBL",
-      "away": "SEA",
-      "shortVideoId": "6406943332112",
-      "longVideoId": "6406944097112"
-    },
-    {
-      "rank": 6,
-      "gameId": 2026020118,
-      "home": "VGK",
-      "away": "CGY",
-      "shortVideoId": "6406946690112",
-      "longVideoId": "6406947966112"
-    },
-    {
-      "rank": 7,
-      "gameId": 2026020109,
-      "home": "OTT",
-      "away": "NYI",
-      "shortVideoId": "6406940750112",
-      "longVideoId": "6406941527112"
-    },
-    {
-      "rank": 8,
-      "gameId": 2026020113,
-      "home": "NJD",
-      "away": "NYR",
-      "shortVideoId": "6406940417112",
-      "longVideoId": "6406940429112"
-    },
-    {
-      "rank": 9,
-      "gameId": 2026020115,
-      "home": "NSH",
-      "away": "SJS",
-      "shortVideoId": "6406944850112",
-      "longVideoId": "6406945318112"
-    },
-    {
-      "rank": 10,
-      "gameId": 2026020110,
-      "home": "DET",
-      "away": "PHI",
-      "shortVideoId": "6406942817112",
-      "longVideoId": "6406943526112"
-    },
-    {
-      "rank": 11,
-      "gameId": 2026020117,
-      "home": "EDM",
-      "away": "UTA",
-      "shortVideoId": "6406946057112",
-      "longVideoId": "6406946537112"
+      "gameId": 2026020119,
+      "home": "COL",
+      "away": "PIT",
+      "shortVideoId": "6406996389112",
+      "longVideoId": null
     }
   ]
 }
