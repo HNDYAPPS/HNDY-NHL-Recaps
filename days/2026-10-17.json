@@ -97,6 +97,22 @@
       "away": "BOS",
       "shortVideoId": "6407037691112",
       "longVideoId": "6407037484112"
+    },
+    {
+      "rank": 13,
+      "gameId": 2026020133,
+      "home": "UTA",
+      "away": "EDM",
+      "shortVideoId": "6407039756112",
+      "longVideoId": "6407040049112"
+    },
+    {
+      "rank": 14,
+      "gameId": 2026020134,
+      "home": "VGK",
+      "away": "PIT",
+      "shortVideoId": "6407038001112",
+      "longVideoId": "6407037904112"
     }
   ]
 }
