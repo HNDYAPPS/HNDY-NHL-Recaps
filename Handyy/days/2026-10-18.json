@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-18",
+  "totalGames": 2,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020136,
+      "home": "CGY",
+      "away": "CAR",
+      "shortVideoId": "6407066612112",
+      "longVideoId": "6407065327112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020135,
+      "home": "MIN",
+      "away": "CBJ",
+      "shortVideoId": "6407062986112",
+      "longVideoId": "6407061520112"
+    }
+  ]
+}
