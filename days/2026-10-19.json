@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-19",
+  "totalGames": 4,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020137,
+      "home": "NYR",
+      "away": "ANA",
+      "shortVideoId": "6407111500112",
+      "longVideoId": "6407110604112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020138,
+      "home": "PHI",
+      "away": "COL",
+      "shortVideoId": "6407112388112",
+      "longVideoId": "6407111590112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020139,
+      "home": "TOR",
+      "away": "SJS",
+      "shortVideoId": "6407113089112",
+      "longVideoId": "6407112512112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020140,
+      "home": "UTA",
+      "away": "PIT",
+      "shortVideoId": "6407115520112",
+      "longVideoId": "6407115225112"
+    }
+  ]
+}
