@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-20",
+  "totalGames": 11,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020141,
+      "home": "MTL",
+      "away": "SJS",
+      "shortVideoId": "6407161869112",
+      "longVideoId": "6407161501112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020142,
+      "home": "NJD",
+      "away": "COL",
+      "shortVideoId": "6407160909112",
+      "longVideoId": "6407161865112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020143,
+      "home": "NYI",
+      "away": "ANA",
+      "shortVideoId": "6407162260112",
+      "longVideoId": "6407161292112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020144,
+      "home": "WSH",
+      "away": "LAK",
+      "shortVideoId": "6407162262112",
+      "longVideoId": "6407160715112"
+    },
+    {
+      "rank": 5,
+      "gameId": 2026020145,
+      "home": "CBJ",
+      "away": "TOR",
+      "shortVideoId": "6407163180112",
+      "longVideoId": "6407161322112"
+    },
+    {
+      "rank": 6,
+      "gameId": 2026020146,
+      "home": "STL",
+      "away": "WPG",
+      "shortVideoId": "6407163114112",
+      "longVideoId": "6407163319112"
+    },
+    {
+      "rank": 7,
+      "gameId": 2026020147,
+      "home": "DAL",
+      "away": "BOS",
+      "shortVideoId": "6407164206112",
+      "longVideoId": "6407163934112"
+    }
+  ]
+}
