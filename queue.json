@@ -65,6 +65,22 @@
       "away": "MIN",
       "shortVideoId": "6407167709112",
       "longVideoId": "6407167603112"
+    },
+    {
+      "rank": 9,
+      "gameId": 2026020149,
+      "home": "SEA",
+      "away": "DET",
+      "shortVideoId": "6407166181112",
+      "longVideoId": "6407168820112"
+    },
+    {
+      "rank": 10,
+      "gameId": 2026020150,
+      "home": "VAN",
+      "away": "CAR",
+      "shortVideoId": "6407169122112",
+      "longVideoId": "6407168929112"
     }
   ]
 }
