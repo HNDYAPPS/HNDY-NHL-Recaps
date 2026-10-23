@@ -98,5 +98,12 @@
       "shortVideoId": "6407265842112",
       "longVideoId": "6407266532112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "81RoZyL3Wfk",
+      "home": "JYP",
+      "away": "HPK"
+    }
   ]
 }
