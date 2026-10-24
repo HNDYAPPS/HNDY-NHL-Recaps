@@ -481,5 +481,40 @@
     "away": "HPK",
     "date": "2026-10-22",
     "published": "2026-10-22T18:59:59+00:00"
+  },
+  "7d7SGGTdAZE": {
+    "youtubeId": "7d7SGGTdAZE",
+    "home": "Sport",
+    "away": "SaiPa",
+    "date": "2026-10-23",
+    "published": "2026-10-23T19:46:27+00:00"
+  },
+  "EKHIN7h8XwE": {
+    "youtubeId": "EKHIN7h8XwE",
+    "home": "K-Espoo",
+    "away": "HIFK",
+    "date": "2026-10-23",
+    "published": "2026-10-23T19:43:21+00:00"
+  },
+  "wR4wjr_U4o8": {
+    "youtubeId": "wR4wjr_U4o8",
+    "home": "Kärpät",
+    "away": "KalPa",
+    "date": "2026-10-23",
+    "published": "2026-10-23T19:28:46+00:00"
+  },
+  "PiV6GQ0MqBU": {
+    "youtubeId": "PiV6GQ0MqBU",
+    "home": "Jukurit",
+    "away": "Ilves",
+    "date": "2026-10-23",
+    "published": "2026-10-23T19:14:00+00:00"
+  },
+  "DADdmI0RX0E": {
+    "youtubeId": "DADdmI0RX0E",
+    "home": "Lukko",
+    "away": "TPS",
+    "date": "2026-10-23",
+    "published": "2026-10-23T19:10:48+00:00"
   }
 }
