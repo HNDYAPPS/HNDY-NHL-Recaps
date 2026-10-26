@@ -33,6 +33,14 @@
       "away": "COL",
       "shortVideoId": "6407404354112",
       "longVideoId": "6407403179112"
+    },
+    {
+      "rank": 5,
+      "gameId": 2026020184,
+      "home": "VAN",
+      "away": "MIN",
+      "shortVideoId": "6407406406112",
+      "longVideoId": null
     }
   ]
 }
