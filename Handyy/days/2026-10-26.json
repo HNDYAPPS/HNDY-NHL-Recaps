@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-26",
+  "totalGames": 3,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020185,
+      "home": "NYR",
+      "away": "LAK",
+      "shortVideoId": "6407450310112",
+      "longVideoId": "6407448448112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020186,
+      "home": "CGY",
+      "away": "TOR",
+      "shortVideoId": "6407452646112",
+      "longVideoId": "6407452157112"
+    }
+  ]
+}
