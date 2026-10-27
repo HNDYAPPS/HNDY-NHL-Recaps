@@ -17,6 +17,14 @@
       "away": "TOR",
       "shortVideoId": "6407452646112",
       "longVideoId": "6407452157112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020187,
+      "home": "EDM",
+      "away": "DET",
+      "shortVideoId": "6407453985112",
+      "longVideoId": "6407454092112"
     }
   ]
 }

@@ -4,6 +4,14 @@
   "games": [
     {
       "rank": 1,
+      "gameId": 2026020187,
+      "home": "EDM",
+      "away": "DET",
+      "shortVideoId": "6407453985112",
+      "longVideoId": "6407454092112"
+    },
+    {
+      "rank": 2,
       "gameId": 2026020185,
       "home": "NYR",
       "away": "LAK",
@@ -11,7 +19,7 @@
       "longVideoId": "6407448448112"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "gameId": 2026020186,
       "home": "CGY",
       "away": "TOR",
