@@ -57,6 +57,14 @@
       "away": "FLA",
       "shortVideoId": "6407509403112",
       "longVideoId": "6407509902112"
+    },
+    {
+      "rank": 8,
+      "gameId": 2026020195,
+      "home": "UTA",
+      "away": "MIN",
+      "shortVideoId": "6407511566112",
+      "longVideoId": null
     }
   ]
 }
