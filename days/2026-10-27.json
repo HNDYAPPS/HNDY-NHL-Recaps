@@ -73,6 +73,14 @@
       "away": "OTT",
       "shortVideoId": "6407514951112",
       "longVideoId": "6407514657112"
+    },
+    {
+      "rank": 10,
+      "gameId": 2026020197,
+      "home": "ANA",
+      "away": "VAN",
+      "shortVideoId": "6407513683112",
+      "longVideoId": "6407513281112"
     }
   ]
 }
