@@ -90,5 +90,12 @@
       "shortVideoId": "6407512913112",
       "longVideoId": "6407515668112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "2rkRwW7W5zs",
+      "home": "KalPa",
+      "away": "Sport"
+    }
   ]
 }
