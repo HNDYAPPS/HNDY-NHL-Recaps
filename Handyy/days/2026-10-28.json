@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-28",
+  "totalGames": 4,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020201,
+      "home": "COL",
+      "away": "NJD",
+      "shortVideoId": "6407572774112",
+      "longVideoId": null
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020199,
+      "home": "WSH",
+      "away": "PHI",
+      "shortVideoId": "6407568251112",
+      "longVideoId": "6407569907112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020200,
+      "home": "EDM",
+      "away": "CGY",
+      "shortVideoId": "6407573225112",
+      "longVideoId": "6407573229112"
+    }
+  ]
+}
