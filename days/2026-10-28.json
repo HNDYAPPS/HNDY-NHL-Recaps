@@ -34,5 +34,42 @@
       "shortVideoId": "6407574698112",
       "longVideoId": "6407575282112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "6orYATcmek0",
+      "home": "HIFK",
+      "away": "Ilves"
+    },
+    {
+      "youtubeId": "xMRRKfwJmIc",
+      "home": "K-Espoo",
+      "away": "TPS"
+    },
+    {
+      "youtubeId": "82n4F6-TjCM",
+      "home": "JYP",
+      "away": "Tappara"
+    },
+    {
+      "youtubeId": "8VwEJrWBXkg",
+      "home": "Pelicans",
+      "away": "SaiPa"
+    },
+    {
+      "youtubeId": "16hqz68ipYc",
+      "home": "Kärpät",
+      "away": "HPK"
+    },
+    {
+      "youtubeId": "9Hdgk_6Zwj0",
+      "home": "KooKoo",
+      "away": "Ässät"
+    },
+    {
+      "youtubeId": "PAiHPX_zAZM",
+      "home": "Jukurit",
+      "away": "Lukko"
+    }
   ]
 }
