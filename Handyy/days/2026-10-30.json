@@ -26,5 +26,12 @@
       "shortVideoId": "6407686616112",
       "longVideoId": "6407687787112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "q-AxpdpRF98",
+      "home": "SaiPa",
+      "away": "JYP"
+    }
   ]
 }
