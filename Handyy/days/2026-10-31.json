@@ -74,5 +74,12 @@
       "shortVideoId": "6407731752112",
       "longVideoId": "6407732637112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "tS1w7uUcheo",
+      "home": "JYP",
+      "away": "Jokerit"
+    }
   ]
 }
