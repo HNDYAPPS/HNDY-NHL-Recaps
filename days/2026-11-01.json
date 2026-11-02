@@ -1,7 +1,40 @@
 {
   "date": "2026-11-01",
-  "totalGames": 0,
-  "games": [],
+  "totalGames": 5,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020227,
+      "home": "CAR",
+      "away": "WPG",
+      "shortVideoId": "6407758806112",
+      "longVideoId": "6407760078112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020228,
+      "home": "WSH",
+      "away": "MIN",
+      "shortVideoId": "6407767909112",
+      "longVideoId": "6407766730112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020229,
+      "home": "PHI",
+      "away": "UTA",
+      "shortVideoId": "6407764145112",
+      "longVideoId": "6407762893112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020230,
+      "home": "NYR",
+      "away": "EDM",
+      "shortVideoId": "6407767872112",
+      "longVideoId": "6407766208112"
+    }
+  ],
   "liiga": [
     {
       "youtubeId": "37B_alkdfxc",
