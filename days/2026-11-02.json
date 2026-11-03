@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-02",
+  "totalGames": 4,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020232,
+      "home": "BOS",
+      "away": "VGK",
+      "shortVideoId": "6407818133112",
+      "longVideoId": "6407818334112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020233,
+      "home": "FLA",
+      "away": "DET",
+      "shortVideoId": "6407819471112",
+      "longVideoId": "6407820066112"
+    }
+  ]
+}
