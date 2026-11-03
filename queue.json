@@ -17,6 +17,14 @@
       "away": "DET",
       "shortVideoId": "6407819471112",
       "longVideoId": "6407820066112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020234,
+      "home": "CHI",
+      "away": "COL",
+      "shortVideoId": "6407821316112",
+      "longVideoId": null
     }
   ]
 }
