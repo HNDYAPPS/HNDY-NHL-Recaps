@@ -25,6 +25,14 @@
       "away": "COL",
       "shortVideoId": "6407821729112",
       "longVideoId": "6407821149112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020235,
+      "home": "SJS",
+      "away": "CGY",
+      "shortVideoId": "6407823682112",
+      "longVideoId": "6407823192112"
     }
   ]
 }
