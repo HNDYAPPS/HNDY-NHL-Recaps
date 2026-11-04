@@ -73,6 +73,14 @@
       "away": "DET",
       "shortVideoId": "6407878533112",
       "longVideoId": "6407880566112"
+    },
+    {
+      "rank": 10,
+      "gameId": 2026020245,
+      "home": "NSH",
+      "away": "CAR",
+      "shortVideoId": "6407883604112",
+      "longVideoId": "6407882516112"
     }
   ]
 }
