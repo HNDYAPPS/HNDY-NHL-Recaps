@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-04",
+  "totalGames": 4,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020247,
+      "home": "BUF",
+      "away": "OTT",
+      "shortVideoId": "6407936357112",
+      "longVideoId": "6407935869112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020248,
+      "home": "FLA",
+      "away": "CHI",
+      "shortVideoId": "6407937129112",
+      "longVideoId": "6407934079112"
+    }
+  ]
+}
