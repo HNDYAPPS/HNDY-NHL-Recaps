@@ -17,6 +17,22 @@
       "away": "CHI",
       "shortVideoId": "6407937129112",
       "longVideoId": "6407934079112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020249,
+      "home": "LAK",
+      "away": "SJS",
+      "shortVideoId": "6407941444112",
+      "longVideoId": null
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020250,
+      "home": "SEA",
+      "away": "CGY",
+      "shortVideoId": "6407942016112",
+      "longVideoId": "6407940924112"
     }
   ]
 }
