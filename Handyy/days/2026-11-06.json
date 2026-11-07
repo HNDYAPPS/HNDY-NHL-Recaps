@@ -4,6 +4,14 @@
   "games": [
     {
       "rank": 1,
+      "gameId": 2026020264,
+      "home": "CGY",
+      "away": "ANA",
+      "shortVideoId": "6408050315112",
+      "longVideoId": "6408050611112"
+    },
+    {
+      "rank": 2,
       "gameId": 2026020262,
       "home": "BUF",
       "away": "CBJ",
@@ -11,11 +19,11 @@
       "longVideoId": "6408048686112"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "gameId": 2026020263,
       "home": "MIN",
       "away": "SJS",
-      "shortVideoId": "6408049026112",
+      "shortVideoId": "6408050423112",
       "longVideoId": "6408051001112"
     }
   ]

@@ -15,8 +15,16 @@
       "gameId": 2026020263,
       "home": "MIN",
       "away": "SJS",
-      "shortVideoId": "6408049026112",
+      "shortVideoId": "6408050423112",
       "longVideoId": "6408051001112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020264,
+      "home": "CGY",
+      "away": "ANA",
+      "shortVideoId": "6408050315112",
+      "longVideoId": "6408050611112"
     }
   ]
 }
