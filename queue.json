@@ -57,6 +57,14 @@
       "away": "CHI",
       "shortVideoId": "6408089937112",
       "longVideoId": "6408088575112"
+    },
+    {
+      "rank": 8,
+      "gameId": 2026020272,
+      "home": "DAL",
+      "away": "SJS",
+      "shortVideoId": "6408089846112",
+      "longVideoId": "6408089375112"
     }
   ]
 }
