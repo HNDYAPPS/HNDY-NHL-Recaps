@@ -1,30 +1,62 @@
 {
-  "date": "2026-11-06",
-  "totalGames": 3,
+  "date": "2026-11-07",
+  "totalGames": 12,
   "games": [
     {
       "rank": 1,
-      "gameId": 2026020264,
-      "home": "CGY",
-      "away": "ANA",
-      "shortVideoId": "6408050315112",
-      "longVideoId": "6408050611112"
+      "gameId": 2026020270,
+      "home": "NYI",
+      "away": "NJD",
+      "shortVideoId": "6408087453112",
+      "longVideoId": "6408088737112"
     },
     {
       "rank": 2,
-      "gameId": 2026020262,
-      "home": "BUF",
-      "away": "CBJ",
-      "shortVideoId": "6408049269112",
-      "longVideoId": "6408048686112"
+      "gameId": 2026020271,
+      "home": "CAR",
+      "away": "CHI",
+      "shortVideoId": "6408089937112",
+      "longVideoId": "6408088575112"
     },
     {
       "rank": 3,
-      "gameId": 2026020263,
-      "home": "MIN",
-      "away": "SJS",
-      "shortVideoId": "6408050423112",
-      "longVideoId": "6408051001112"
+      "gameId": 2026020265,
+      "home": "WSH",
+      "away": "FLA",
+      "shortVideoId": "6408074046112",
+      "longVideoId": "6408075124112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020267,
+      "home": "SEA",
+      "away": "NYR",
+      "shortVideoId": "6408082097112",
+      "longVideoId": "6408083092112"
+    },
+    {
+      "rank": 5,
+      "gameId": 2026020269,
+      "home": "OTT",
+      "away": "UTA",
+      "shortVideoId": "6408087448112",
+      "longVideoId": "6408088026112"
+    },
+    {
+      "rank": 6,
+      "gameId": 2026020268,
+      "home": "TOR",
+      "away": "MTL",
+      "shortVideoId": "6408086363112",
+      "longVideoId": "6408088017112"
+    },
+    {
+      "rank": 7,
+      "gameId": 2026020266,
+      "home": "NSH",
+      "away": "STL",
+      "shortVideoId": "6408076114112",
+      "longVideoId": "6408073772112"
     }
   ]
 }
