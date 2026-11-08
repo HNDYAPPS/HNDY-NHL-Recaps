@@ -73,6 +73,14 @@
       "away": "STL",
       "shortVideoId": "6408076114112",
       "longVideoId": "6408073772112"
+    },
+    {
+      "rank": 10,
+      "gameId": 2026020274,
+      "home": "COL",
+      "away": "DET",
+      "shortVideoId": "6408089728112",
+      "longVideoId": "6408090021112"
     }
   ]
 }
