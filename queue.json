@@ -65,6 +65,14 @@
       "away": "SJS",
       "shortVideoId": "6408089846112",
       "longVideoId": "6408089375112"
+    },
+    {
+      "rank": 9,
+      "gameId": 2026020273,
+      "home": "MIN",
+      "away": "TBL",
+      "shortVideoId": "6408090946112",
+      "longVideoId": "6408089281112"
     }
   ]
 }
