@@ -17,6 +17,14 @@
       "away": "PHI",
       "shortVideoId": "6408169654112",
       "longVideoId": "6408168283112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020285,
+      "home": "SJS",
+      "away": "NYI",
+      "shortVideoId": "6408170478112",
+      "longVideoId": null
     }
   ],
   "liiga": [
