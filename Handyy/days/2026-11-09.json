@@ -1,5 +1,14 @@
 {
   "date": "2026-11-09",
   "totalGames": 3,
-  "games": []
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020283,
+      "home": "EDM",
+      "away": "NYR",
+      "shortVideoId": "6408167927112",
+      "longVideoId": null
+    }
+  ]
 }
