@@ -41,6 +41,14 @@
       "away": "FLA",
       "shortVideoId": "6408214969112",
       "longVideoId": "6408216127112"
+    },
+    {
+      "rank": 6,
+      "gameId": 2026020290,
+      "home": "STL",
+      "away": "DET",
+      "shortVideoId": "6408216435112",
+      "longVideoId": null
     }
   ]
 }
