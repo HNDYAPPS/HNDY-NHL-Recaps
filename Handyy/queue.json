@@ -49,6 +49,14 @@
       "away": "NJD",
       "shortVideoId": "6408215300112",
       "longVideoId": "6408214225112"
+    },
+    {
+      "rank": 7,
+      "gameId": 2026020292,
+      "home": "LAK",
+      "away": "NSH",
+      "shortVideoId": "6408222362112",
+      "longVideoId": "6408219813112"
     }
   ]
 }
