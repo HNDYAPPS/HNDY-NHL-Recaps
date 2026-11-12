@@ -28,6 +28,14 @@
     },
     {
       "rank": 4,
+      "gameId": 2026020298,
+      "home": "SJS",
+      "away": "PIT",
+      "shortVideoId": "6408270815112",
+      "longVideoId": "6408272471112"
+    },
+    {
+      "rank": 5,
       "gameId": 2026020296,
       "home": "VGK",
       "away": "UTA",
@@ -35,7 +43,7 @@
       "longVideoId": "6408269382112"
     },
     {
-      "rank": 5,
+      "rank": 6,
       "gameId": 2026020294,
       "home": "CGY",
       "away": "NYR",
