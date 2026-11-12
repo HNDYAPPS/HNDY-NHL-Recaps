@@ -12,11 +12,26 @@
     },
     {
       "rank": 2,
+      "gameId": 2026020295,
+      "home": "EDM",
+      "away": "PHI",
+      "shortVideoId": "6408269251112",
+      "longVideoId": "6408268802112"
+    },
+    {
+      "rank": 3,
       "gameId": 2026020294,
       "home": "CGY",
       "away": "NYR",
       "shortVideoId": "6408265855112",
       "longVideoId": "6408268201112"
+    }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "aEhXMg4Wk90",
+      "home": "JYP",
+      "away": "Kärpät"
     }
   ]
 }

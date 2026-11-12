@@ -17,6 +17,46 @@
       "away": "NYR",
       "shortVideoId": "6408265855112",
       "longVideoId": "6408268201112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020295,
+      "home": "EDM",
+      "away": "PHI",
+      "shortVideoId": "6408269251112",
+      "longVideoId": "6408268802112"
+    }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "dJo-uuBdx3k",
+      "home": "Ilves",
+      "away": "Pelicans"
+    },
+    {
+      "youtubeId": "46ju2UKdYXA",
+      "home": "Lukko",
+      "away": "KalPa"
+    },
+    {
+      "youtubeId": "3BLJIBXsCIs",
+      "home": "K-Espoo",
+      "away": "Sport"
+    },
+    {
+      "youtubeId": "SlfDk6lPTYw",
+      "home": "Jukurit",
+      "away": "Ässät"
+    },
+    {
+      "youtubeId": "aEhXMg4Wk90",
+      "home": "JYP",
+      "away": "Kärpät"
+    },
+    {
+      "youtubeId": "3YxwchB4gWA",
+      "home": "HIFK",
+      "away": "Jokerit"
     }
   ]
 }
