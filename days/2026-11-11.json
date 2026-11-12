@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-11",
+  "totalGames": 6,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020293,
+      "home": "BUF",
+      "away": "TBL",
+      "shortVideoId": "6408263848112",
+      "longVideoId": "6408265905112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020294,
+      "home": "CGY",
+      "away": "NYR",
+      "shortVideoId": "6408265855112",
+      "longVideoId": "6408268201112"
+    }
+  ]
+}
