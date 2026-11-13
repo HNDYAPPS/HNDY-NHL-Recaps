@@ -57,6 +57,22 @@
       "away": "DET",
       "shortVideoId": "6408319316112",
       "longVideoId": "6408318768112"
+    },
+    {
+      "rank": 8,
+      "gameId": 2026020305,
+      "home": "CHI",
+      "away": "BUF",
+      "shortVideoId": "6408320057112",
+      "longVideoId": "6408319951112"
+    },
+    {
+      "rank": 9,
+      "gameId": 2026020306,
+      "home": "DAL",
+      "away": "WPG",
+      "shortVideoId": "6408319201112",
+      "longVideoId": "6408320449112"
     }
   ]
 }
