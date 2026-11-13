@@ -73,6 +73,14 @@
       "away": "WPG",
       "shortVideoId": "6408319201112",
       "longVideoId": "6408320449112"
+    },
+    {
+      "rank": 10,
+      "gameId": 2026020307,
+      "home": "UTA",
+      "away": "STL",
+      "shortVideoId": "6408324562112",
+      "longVideoId": null
     }
   ]
 }
