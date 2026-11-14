@@ -18,5 +18,12 @@
       "shortVideoId": "6408368255112",
       "longVideoId": "6408368515112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "TSJhmv9jNEE",
+      "home": "KooKoo",
+      "away": "JYP"
+    }
   ]
 }
