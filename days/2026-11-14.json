@@ -89,6 +89,14 @@
       "away": "BUF",
       "shortVideoId": "6408403567112",
       "longVideoId": "6408403962112"
+    },
+    {
+      "rank": 12,
+      "gameId": 2026020323,
+      "home": "UTA",
+      "away": "SJS",
+      "shortVideoId": "6408405041112",
+      "longVideoId": "6408405145112"
     }
   ]
 }
