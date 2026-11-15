@@ -1,59 +1,94 @@
 {
-  "date": "2026-11-13",
-  "totalGames": 2,
+  "date": "2026-11-14",
+  "totalGames": 14,
   "games": [
     {
       "rank": 1,
-      "gameId": 2026020310,
-      "home": "VAN",
-      "away": "NYR",
-      "shortVideoId": "6408368255112",
-      "longVideoId": "6408368515112"
+      "gameId": 2026020321,
+      "home": "CAR",
+      "away": "SEA",
+      "shortVideoId": "6408387850112",
+      "longVideoId": "6408388832112"
     },
     {
       "rank": 2,
-      "gameId": 2026020311,
-      "home": "VGK",
-      "away": "NSH",
-      "shortVideoId": "6408371126112",
-      "longVideoId": "6408370739112"
-    }
-  ],
-  "liiga": [
-    {
-      "youtubeId": "weTHgNmkEs4",
-      "home": "HPK",
-      "away": "Jukurit"
+      "gameId": 2026020312,
+      "home": "CHI",
+      "away": "WPG",
+      "shortVideoId": "6408392871112",
+      "longVideoId": "6408392418112"
     },
     {
-      "youtubeId": "KIWgzMyCEJ0",
-      "home": "Tappara",
-      "away": "HIFK"
+      "rank": 3,
+      "gameId": 2026020313,
+      "home": "BOS",
+      "away": "MIN",
+      "shortVideoId": "6408402035112",
+      "longVideoId": "6408401144112"
     },
     {
-      "youtubeId": "iIjPyoaqbL0",
-      "home": "KalPa",
-      "away": "K-Espoo"
+      "rank": 4,
+      "gameId": 2026020314,
+      "home": "TOR",
+      "away": "EDM",
+      "shortVideoId": "6408400468112",
+      "longVideoId": "6408401731112"
     },
     {
-      "youtubeId": "jHe4pqDGc-0",
-      "home": "TPS",
-      "away": "Jokerit"
+      "rank": 5,
+      "gameId": 2026020315,
+      "home": "MTL",
+      "away": "COL",
+      "shortVideoId": "6408402531112",
+      "longVideoId": "6408400881112"
     },
     {
-      "youtubeId": "YvWUYUx-fXs",
-      "home": "SaiPa",
-      "away": "Ilves"
+      "rank": 6,
+      "gameId": 2026020316,
+      "home": "TBL",
+      "away": "DET",
+      "shortVideoId": "6408400850112",
+      "longVideoId": "6408400262112"
     },
     {
-      "youtubeId": "aK05q5qA8yY",
-      "home": "Pelicans",
-      "away": "Ässät"
+      "rank": 7,
+      "gameId": 2026020317,
+      "home": "PIT",
+      "away": "OTT",
+      "shortVideoId": "6408401854112",
+      "longVideoId": "6408401374112"
     },
     {
-      "youtubeId": "TSJhmv9jNEE",
-      "home": "KooKoo",
-      "away": "JYP"
+      "rank": 8,
+      "gameId": 2026020318,
+      "home": "WSH",
+      "away": "NJD",
+      "shortVideoId": "6408401442112",
+      "longVideoId": "6408400969112"
+    },
+    {
+      "rank": 9,
+      "gameId": 2026020319,
+      "home": "CBJ",
+      "away": "PHI",
+      "shortVideoId": "6408401430112",
+      "longVideoId": "6408401729112"
+    },
+    {
+      "rank": 10,
+      "gameId": 2026020320,
+      "home": "STL",
+      "away": "FLA",
+      "shortVideoId": "6408401130112",
+      "longVideoId": "6408400184112"
+    },
+    {
+      "rank": 11,
+      "gameId": 2026020322,
+      "home": "DAL",
+      "away": "BUF",
+      "shortVideoId": "6408402321112",
+      "longVideoId": null
     }
   ]
 }
