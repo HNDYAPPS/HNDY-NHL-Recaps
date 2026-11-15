@@ -114,5 +114,12 @@
       "shortVideoId": "6408400850112",
       "longVideoId": "6408400262112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "QiEFqGTW-4E",
+      "home": "JYP",
+      "away": "Pelicans"
+    }
   ]
 }
