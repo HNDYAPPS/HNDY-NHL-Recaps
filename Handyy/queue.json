@@ -4,6 +4,14 @@
   "games": [
     {
       "rank": 1,
+      "gameId": 2026020329,
+      "home": "VGK",
+      "away": "VAN",
+      "shortVideoId": "6408436477112",
+      "longVideoId": null
+    },
+    {
+      "rank": 2,
       "gameId": 2026020327,
       "home": "DAL",
       "away": "FLA",
@@ -11,7 +19,7 @@
       "longVideoId": "6408433281112"
     },
     {
-      "rank": 2,
+      "rank": 3,
       "gameId": 2026020326,
       "home": "PHI",
       "away": "EDM",
@@ -19,7 +27,7 @@
       "longVideoId": "6408432088112"
     },
     {
-      "rank": 3,
+      "rank": 4,
       "gameId": 2026020328,
       "home": "ANA",
       "away": "CGY",
@@ -27,7 +35,7 @@
       "longVideoId": "6408433361112"
     },
     {
-      "rank": 4,
+      "rank": 5,
       "gameId": 2026020330,
       "home": "SJS",
       "away": "NSH",
