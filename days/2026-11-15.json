@@ -42,5 +42,12 @@
       "shortVideoId": "6408434516112",
       "longVideoId": "6408434792112"
     }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "UKK9RHURXMs",
+      "home": "Ilves",
+      "away": "SaiPa"
+    }
   ]
 }
