@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-15",
+  "totalGames": 5,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020326,
+      "home": "PHI",
+      "away": "EDM",
+      "shortVideoId": "6408433643112",
+      "longVideoId": "6408432088112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020328,
+      "home": "ANA",
+      "away": "CGY",
+      "shortVideoId": "6408432514112",
+      "longVideoId": "6408433361112"
+    }
+  ]
+}
