@@ -4,6 +4,14 @@
   "games": [
     {
       "rank": 1,
+      "gameId": 2026020332,
+      "home": "UTA",
+      "away": "VAN",
+      "shortVideoId": "6408481082112",
+      "longVideoId": null
+    },
+    {
+      "rank": 2,
       "gameId": 2026020331,
       "home": "NYR",
       "away": "MTL",

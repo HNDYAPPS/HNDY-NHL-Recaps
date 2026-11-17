@@ -9,6 +9,14 @@
       "away": "MTL",
       "shortVideoId": "6408478745112",
       "longVideoId": "6408479231112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020332,
+      "home": "UTA",
+      "away": "VAN",
+      "shortVideoId": "6408481082112",
+      "longVideoId": null
     }
   ]
 }
