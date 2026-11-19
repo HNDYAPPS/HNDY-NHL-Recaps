@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-18",
+  "totalGames": 3,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020345,
+      "home": "NJD",
+      "away": "MTL",
+      "shortVideoId": "6408575338112",
+      "longVideoId": "6408577465112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020344,
+      "home": "DET",
+      "away": "BOS",
+      "shortVideoId": "6408575122112",
+      "longVideoId": "6408575230112"
+    }
+  ],
+  "liiga": [
+    {
+      "youtubeId": "z-m4h7F0f5s",
+      "home": "JYP",
+      "away": "Sport"
+    }
+  ]
+}
