@@ -89,6 +89,14 @@
       "away": "VAN",
       "shortVideoId": "6408637645112",
       "longVideoId": "6408637653112"
+    },
+    {
+      "rank": 12,
+      "gameId": 2026020358,
+      "home": "VGK",
+      "away": "DAL",
+      "shortVideoId": "6408640489112",
+      "longVideoId": null
     }
   ],
   "liiga": [
