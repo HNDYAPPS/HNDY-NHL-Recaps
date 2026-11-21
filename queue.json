@@ -1,37 +1,12 @@
 {
-  "date": "2026-11-20",
+  "date": "2026-11-21",
   "totalGames": 0,
   "games": [],
   "liiga": [
     {
-      "youtubeId": "i33zFwlXze8",
-      "home": "KooKoo",
-      "away": "Kärpät"
-    },
-    {
-      "youtubeId": "L3YS9jARsec",
-      "home": "HPK",
-      "away": "Jokerit"
-    },
-    {
-      "youtubeId": "3kncqioKywo",
-      "home": "Pelicans",
-      "away": "Lukko"
-    },
-    {
-      "youtubeId": "vm9XLSqBkXY",
-      "home": "JYP",
-      "away": "HIFK"
-    },
-    {
-      "youtubeId": "CbqHw-CvwvE",
-      "home": "SaiPa",
-      "away": "TPS"
-    },
-    {
-      "youtubeId": "T1wPKFAXmlg",
-      "home": "Ilves",
-      "away": "Tappara"
+      "youtubeId": "G8EfqUsdCJ4",
+      "home": "K-Espoo",
+      "away": "Ässät"
     }
   ]
 }
