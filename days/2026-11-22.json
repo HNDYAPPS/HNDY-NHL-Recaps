@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-22",
+  "totalGames": 5,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020373,
+      "home": "NYR",
+      "away": "CAR",
+      "shortVideoId": "6408742154112",
+      "longVideoId": "6408741949112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020374,
+      "home": "TBL",
+      "away": "BUF",
+      "shortVideoId": "6408748255112",
+      "longVideoId": "6408747576112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020375,
+      "home": "STL",
+      "away": "EDM",
+      "shortVideoId": "6408751698112",
+      "longVideoId": "6408751495112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020376,
+      "home": "DAL",
+      "away": "PIT",
+      "shortVideoId": "6408749632112",
+      "longVideoId": "6408751095112"
+    }
+  ]
+}
