@@ -12,6 +12,14 @@
     },
     {
       "rank": 2,
+      "gameId": 2026020377,
+      "home": "VAN",
+      "away": "CHI",
+      "shortVideoId": "6408751171112",
+      "longVideoId": null
+    },
+    {
+      "rank": 3,
       "gameId": 2026020373,
       "home": "NYR",
       "away": "CAR",
@@ -19,7 +27,7 @@
       "longVideoId": "6408741949112"
     },
     {
-      "rank": 3,
+      "rank": 4,
       "gameId": 2026020374,
       "home": "TBL",
       "away": "BUF",
@@ -27,7 +35,7 @@
       "longVideoId": "6408747576112"
     },
     {
-      "rank": 4,
+      "rank": 5,
       "gameId": 2026020376,
       "home": "DAL",
       "away": "PIT",
