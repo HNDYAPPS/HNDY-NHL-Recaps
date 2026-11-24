@@ -49,6 +49,14 @@
       "away": "ANA",
       "shortVideoId": "6408800119112",
       "longVideoId": "6408800996112"
+    },
+    {
+      "rank": 7,
+      "gameId": 2026020384,
+      "home": "SJS",
+      "away": "MIN",
+      "shortVideoId": "6408800341112",
+      "longVideoId": "6408798749112"
     }
   ]
 }
