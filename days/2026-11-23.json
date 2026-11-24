@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-23",
+  "totalGames": 7,
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020378,
+      "home": "NJD",
+      "away": "CBJ",
+      "shortVideoId": "6408793654112",
+      "longVideoId": "6408793461112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020379,
+      "home": "MTL",
+      "away": "LAK",
+      "shortVideoId": "6408796958112",
+      "longVideoId": "6408796965112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020380,
+      "home": "OTT",
+      "away": "CGY",
+      "shortVideoId": "6408796372112",
+      "longVideoId": "6408797749112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020381,
+      "home": "NYI",
+      "away": "TOR",
+      "shortVideoId": "6408795853112",
+      "longVideoId": "6408796649112"
+    },
+    {
+      "rank": 5,
+      "gameId": 2026020382,
+      "home": "WPG",
+      "away": "UTA",
+      "shortVideoId": "6408795671112",
+      "longVideoId": "6408795191112"
+    }
+  ]
+}
