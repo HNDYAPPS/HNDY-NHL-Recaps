@@ -28,6 +28,14 @@
     },
     {
       "rank": 4,
+      "gameId": 2026020383,
+      "home": "SEA",
+      "away": "ANA",
+      "shortVideoId": "6408800119112",
+      "longVideoId": null
+    },
+    {
+      "rank": 5,
       "gameId": 2026020379,
       "home": "MTL",
       "away": "LAK",
@@ -35,7 +43,7 @@
       "longVideoId": "6408796965112"
     },
     {
-      "rank": 5,
+      "rank": 6,
       "gameId": 2026020378,
       "home": "NJD",
       "away": "CBJ",

@@ -41,6 +41,14 @@
       "away": "UTA",
       "shortVideoId": "6408795671112",
       "longVideoId": "6408795191112"
+    },
+    {
+      "rank": 6,
+      "gameId": 2026020383,
+      "home": "SEA",
+      "away": "ANA",
+      "shortVideoId": "6408800119112",
+      "longVideoId": null
     }
   ]
 }
