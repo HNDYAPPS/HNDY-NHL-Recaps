@@ -1,62 +1,22 @@
 {
-  "date": "2026-11-23",
-  "totalGames": 7,
-  "games": [
+  "date": "2026-11-24",
+  "totalGames": 1,
+  "games": [],
+  "liiga": [
     {
-      "rank": 1,
-      "gameId": 2026020378,
-      "home": "NJD",
-      "away": "CBJ",
-      "shortVideoId": "6408793654112",
-      "longVideoId": "6408793461112"
+      "youtubeId": "HQI-_PFLImQ",
+      "home": "Ilves",
+      "away": "Ässät"
     },
     {
-      "rank": 2,
-      "gameId": 2026020379,
-      "home": "MTL",
-      "away": "LAK",
-      "shortVideoId": "6408796958112",
-      "longVideoId": "6408796965112"
+      "youtubeId": "rm5y3xunTAQ",
+      "home": "Sport",
+      "away": "K-Espoo"
     },
     {
-      "rank": 3,
-      "gameId": 2026020380,
-      "home": "OTT",
-      "away": "CGY",
-      "shortVideoId": "6408796372112",
-      "longVideoId": "6408797749112"
-    },
-    {
-      "rank": 4,
-      "gameId": 2026020381,
-      "home": "NYI",
-      "away": "TOR",
-      "shortVideoId": "6408795853112",
-      "longVideoId": "6408796649112"
-    },
-    {
-      "rank": 5,
-      "gameId": 2026020382,
-      "home": "WPG",
-      "away": "UTA",
-      "shortVideoId": "6408795671112",
-      "longVideoId": "6408795191112"
-    },
-    {
-      "rank": 6,
-      "gameId": 2026020383,
-      "home": "SEA",
-      "away": "ANA",
-      "shortVideoId": "6408800119112",
-      "longVideoId": "6408800996112"
-    },
-    {
-      "rank": 7,
-      "gameId": 2026020384,
-      "home": "SJS",
-      "away": "MIN",
-      "shortVideoId": "6408800341112",
-      "longVideoId": "6408798749112"
+      "youtubeId": "nWKEI8YcVW8",
+      "home": "SaiPa",
+      "away": "Lukko"
     }
   ]
 }

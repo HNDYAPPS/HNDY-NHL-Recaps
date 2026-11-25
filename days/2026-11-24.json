@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-24",
+  "totalGames": 1,
+  "games": [],
+  "liiga": [
+    {
+      "youtubeId": "HQI-_PFLImQ",
+      "home": "Ilves",
+      "away": "Ässät"
+    },
+    {
+      "youtubeId": "rm5y3xunTAQ",
+      "home": "Sport",
+      "away": "K-Espoo"
+    },
+    {
+      "youtubeId": "nWKEI8YcVW8",
+      "home": "SaiPa",
+      "away": "Lukko"
+    }
+  ]
+}
