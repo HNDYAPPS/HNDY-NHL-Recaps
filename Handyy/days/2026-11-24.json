@@ -1,5 +1,14 @@
 {
   "date": "2026-11-24",
   "totalGames": 1,
-  "games": []
+  "games": [
+    {
+      "rank": 1,
+      "gameId": 2026020385,
+      "home": "EDM",
+      "away": "VGK",
+      "shortVideoId": "6408853929112",
+      "longVideoId": null
+    }
+  ]
 }
