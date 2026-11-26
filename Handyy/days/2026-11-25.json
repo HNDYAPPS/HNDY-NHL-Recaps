@@ -24,7 +24,7 @@
       "home": "COL",
       "away": "MTL",
       "shortVideoId": "6408908896112",
-      "longVideoId": null
+      "longVideoId": "6408907224112"
     },
     {
       "rank": 4,
@@ -92,6 +92,14 @@
     },
     {
       "rank": 12,
+      "gameId": 2026020399,
+      "home": "SEA",
+      "away": "CHI",
+      "shortVideoId": "6408907895112",
+      "longVideoId": "6408909194112"
+    },
+    {
+      "rank": 13,
       "gameId": 2026020395,
       "home": "DAL",
       "away": "NSH",
