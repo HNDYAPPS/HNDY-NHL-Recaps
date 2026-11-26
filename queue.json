@@ -89,6 +89,14 @@
       "away": "UTA",
       "shortVideoId": "6408906826112",
       "longVideoId": "6408906237112"
+    },
+    {
+      "rank": 12,
+      "gameId": 2026020397,
+      "home": "COL",
+      "away": "MTL",
+      "shortVideoId": "6408908896112",
+      "longVideoId": null
     }
   ],
   "liiga": [
