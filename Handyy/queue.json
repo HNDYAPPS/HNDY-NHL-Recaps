@@ -1,14 +1,86 @@
 {
-  "date": "2026-11-24",
-  "totalGames": 1,
+  "date": "2026-11-25",
+  "totalGames": 14,
   "games": [
     {
       "rank": 1,
-      "gameId": 2026020385,
-      "home": "EDM",
-      "away": "VGK",
-      "shortVideoId": "6408853929112",
-      "longVideoId": "6408853435112"
+      "gameId": 2026020389,
+      "home": "FLA",
+      "away": "OTT",
+      "shortVideoId": "6408902755112",
+      "longVideoId": "6408903645112"
+    },
+    {
+      "rank": 2,
+      "gameId": 2026020392,
+      "home": "WSH",
+      "away": "PHI",
+      "shortVideoId": "6408901971112",
+      "longVideoId": "6408903228112"
+    },
+    {
+      "rank": 3,
+      "gameId": 2026020388,
+      "home": "TBL",
+      "away": "CAR",
+      "shortVideoId": "6408901146112",
+      "longVideoId": "6408901836112"
+    },
+    {
+      "rank": 4,
+      "gameId": 2026020391,
+      "home": "PIT",
+      "away": "CGY",
+      "shortVideoId": "6408901428112",
+      "longVideoId": "6408902017112"
+    },
+    {
+      "rank": 5,
+      "gameId": 2026020390,
+      "home": "NYI",
+      "away": "STL",
+      "shortVideoId": "6408903531112",
+      "longVideoId": "6408903534112"
+    },
+    {
+      "rank": 6,
+      "gameId": 2026020393,
+      "home": "CBJ",
+      "away": "NJD",
+      "shortVideoId": "6408902642112",
+      "longVideoId": "6408903214112"
+    },
+    {
+      "rank": 7,
+      "gameId": 2026020386,
+      "home": "BOS",
+      "away": "WPG",
+      "shortVideoId": "6408902506112",
+      "longVideoId": "6408901629112"
+    },
+    {
+      "rank": 8,
+      "gameId": 2026020387,
+      "home": "BUF",
+      "away": "NYR",
+      "shortVideoId": "6408901662112",
+      "longVideoId": "6408902116112"
+    },
+    {
+      "rank": 9,
+      "gameId": 2026020394,
+      "home": "DET",
+      "away": "VAN",
+      "shortVideoId": "6408904923112",
+      "longVideoId": "6408904733112"
+    },
+    {
+      "rank": 10,
+      "gameId": 2026020395,
+      "home": "DAL",
+      "away": "NSH",
+      "shortVideoId": "6408905157112",
+      "longVideoId": "6408903789112"
     }
   ]
 }
